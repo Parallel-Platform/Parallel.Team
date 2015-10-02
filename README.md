@@ -1,2 +1,2 @@
 # Parallel.Team
-Codebase for the Parallel.Team app
+Open Codebase for the Parallel.Team app.
