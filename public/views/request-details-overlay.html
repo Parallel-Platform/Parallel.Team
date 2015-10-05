@@ -1,0 +1,1632 @@
+﻿<link rel="import" href="../components/bower_components/polymer/polymer.html">
+<!--<link rel="import" href="../imports/layout.html">-->
+
+<!-- Fonts -->
+<link rel='import' href='../components/bower_components/font-roboto/roboto.html'>
+
+<!--Custom Imports-->
+<link rel="import" href="../imports/side-nav-contents.html" />
+
+<dom-module id="request-details-overlay">
+
+	<style>
+		:host {
+		}
+
+		.logo-link {
+			text-decoration: none;
+			font-size: 2rem;
+			color: #ffffff;
+			margin-left: -15px !important;
+		}
+
+        .profile-place-holder{
+            background-image: url('../assets/app/img/profile-photo-placeholder.jpg')
+        }
+
+        .play-neutral{
+            background-color: #ffffff;
+			color: #bdbdbd;
+			font-size: 1rem;
+			padding: 4.5px 13px;
+			border: solid 2px #BDBDBD;
+			border-radius: 5px;
+			margin: 0 5px;
+			max-height: 30px !important;
+            cursor: pointer;
+        }
+
+        .play-selected{
+            background-color: #4caf50;
+			color: #ffffff;
+			font-size: 1rem;
+			padding: 4.5px 13px;
+			border: solid 2px #4caf50;
+			border-radius: 5px;
+			margin: 0 5px;
+			max-height: 30px !important;
+            cursor: pointer;
+        }
+
+        .play-icon-neutral{
+            color: #9e9e9e;
+        }
+
+        .play-icon-selected{
+            color: #ffffff;
+        }
+
+		.tag-facebook {
+            background-color: #3B5998;
+            color: #ffffff;
+            font-size: 1rem;
+            padding: 3px 13px;
+            border: solid 2px #3B5998;
+            border-radius: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+            max-height: 30px !important;
+            z-index: 1000;
+        }
+
+        .tag-twitter {
+            background-color: #55ACEE;
+            color: #ffffff;
+            font-size: 1rem;
+            padding: 3px 13px;
+            border: solid 2px #55ACEE;
+            border-radius: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+            max-height: 30px !important;
+            z-index: 1000;
+        }
+
+		.psn-label-tag {
+			background-color: #01579B;
+		}
+
+		.xbox-label-tag {
+			background-color: #5DCB17;
+		}
+
+		.wii-label-tag {
+			background-color: #03A9F4;
+		}
+
+		.pc-label-tag {
+			background-color: #F44336;
+		}
+
+		.profile-background {
+			/*background-color: transparent;
+			background:url('../assets/app/img/1662530.jpg');*/
+			top: 0;
+			left: 0;
+			position: absolute !important;
+			height: 200px;
+			background-size: cover;
+			/*border-bottom: solid 1px #ffee58;*/
+			width: 100%;
+			filter: blur(5px);
+			-webkit-filter: blur(5px);
+			-moz-filter: blur(5px);
+			-o-filter: blur(5px);
+			-ms-filter: blur(5px);
+            overflow:hidden;
+		}
+
+		.profile-background-dopple {
+			/*background-color: transparent;
+			background:url('../assets/app/img/1662530.jpg');*/
+			top: 0;
+			left: 0;
+			position: absolute !important;
+			height: 200px;
+			background-size: cover;
+			/*border-bottom: solid 1px #ffee58;*/
+			width: 100%;
+		}
+
+		.profile-background-overlay {
+			background: rgba(0,0,0,.75);
+			opacity: 0.25;
+			-webkit-transition: opacity .25s ease;
+			-moz-transition: opacity .25s ease;
+			top: 0;
+			left: 0;
+			position: absolute !important;
+			height: 200px;
+			width: 100%;
+		}
+
+		.switch label.request-details input[type=checkbox].request-details-overlay:checked + .lever.request-details-overlay {
+			background-color: #7ED321;
+		}
+
+		.switch.request-details-overlay label.request-details-overlay input[type=checkbox].request-details-overlay:checked + .lever.request-details-overlay:after {
+			background-color: #ccff90;
+		}
+
+		.switch.request-details-overlay label.request-details-overlay input[type=checkbox].request-details-overlay:checked + .positive.request-details-overlay {
+			background-color: #ffff00 !important;
+		}
+
+		.switch.request-details-overlay label.request-details-overlay input[type=checkbox].request-details-overlay:checked + .negative.request-details-overlay:after {
+			background-color: #ffff00 !important;
+		}
+
+		.request-list-image {
+			border-radius: 5px;
+			border: 2px solid #ffffff;
+		}
+
+		.text-shadow {
+			text-shadow: 0px 1px 1px #000;
+			/*mix-blend-mode: difference;*/
+		}
+
+		.title {
+			margin-left: 0 !important;
+		}
+
+		.details-area {
+			padding: 0px 20px 20px 20px;
+		}
+
+		.row {
+			margin-bottom: 0 !important;
+			margin-top: 0 !important;
+			line-height: 1;
+		}
+
+        .lfg-input-search {
+			border:solid 2px #e0e0e0; 
+			border-radius:5px;
+			color: #ffea00;
+           
+		}
+
+		.lfg-input-details.input-field textarea:focus {
+			border-bottom:none;
+            box-shadow: none;
+		}
+
+		.lfg-input-search.input-field input[type=text]{
+            border: none !important;
+            box-shadow: none;
+			margin:-2px 10px 0 10px !important;
+            /*font-size: 1.75rem;*/
+        }
+
+		.lfg-input-search.input-field input[type=text]:focus {
+			border-bottom: none;
+            box-shadow:none;
+		}
+
+        /* valid color */
+		.lfg-input-search.input-field input[type=text].valid {
+			border-bottom: none;
+            box-shadow: none;
+		}
+
+
+        /* Icon prefix */
+		.lfg-input-search.input-field .prefix {
+			margin-top: 5px;
+			margin-left: 5px;
+			color: #9e9e9e;
+		}
+
+		.lfg-input-search.input-field .prefix.active {
+			color: #ffea00;
+		}
+
+		.comment-button-row {
+			margin-top: 20px !important;
+		}
+
+		.lfg-input.input-field textarea {
+			color: #e65100;
+			border-bottom: 1px solid #bdbdbd;
+		}
+
+        .lfg-input.input-field div {
+			color: #e65100;
+			border-bottom: 1px solid #f57c00;
+            margin-bottom:30px;
+            min-height:100px;
+            padding-bottom:30px;
+		}
+
+		.lfg-input.input-field textarea:focus {
+			border-bottom: 1px solid #f57c00;
+			box-shadow: 0 1px 0 0 #f57c00;
+		}
+
+        .lfg-input.input-field div:focus {
+			border-bottom: 1px solid #f57c00;
+			box-shadow: 0 1px 0 0 #f57c00;
+            outline: 0px solid transparent;
+		}
+
+		.lfg-input.input-field textarea.invalid {
+			border-bottom: 1px solid #f44336;
+			box-shadow: 0 1px 0 0 #f44336;
+		}
+
+        .lfg-input.input-field div.invalid {
+			border-bottom: 1px solid #f44336;
+			box-shadow: 0 1px 0 0 #f44336;
+		}
+
+		.request-list-item {
+			cursor: pointer;
+		}
+
+		#paper-header-panel {
+			border-bottom: solid 1px #ffffff;
+		}
+
+		.collection-item {
+			height: auto !important;
+			padding-top: 20px !important;
+			padding-bottom: 40px !important;
+		}
+
+		.bottom-bar {
+			margin-left: 0px !important;
+		}
+
+		.content-area {
+			padding: 0 3% 3% 3%;
+		}
+
+		.requests-card-panel {
+			width: 100%;
+			box-shadow: 0 2px 5px 0 #e65100;
+			border-radius: 0px;
+			height: 290px !important;
+		}
+
+		.comments-card-panel {
+			width: 100%;
+			box-shadow: 0 2px 5px 0 #e65100;
+			border-radius: 0px;
+			padding: 0;
+		}
+
+		.creator-profile-image {
+			width: 50px;
+			height: 50px;
+			overflow: hidden;
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+        .search-profile-image {
+			width: 20px;
+			height: 20px;
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.reply-circle {
+			font-size: 18px;
+			line-height: 55px;
+			color: #fff;
+			background-color: #bdbdbd;
+			text-align: center;
+			width: 55px;
+			height: 55px;
+			overflow: hidden;
+			left: 15px;
+			display: inline-block;
+			vertical-align: middle;
+			border-radius: 50%;
+            margin-right:30px;
+		}
+
+		.request-info-area {
+			padding: 0 10%;
+		}
+
+		.comment-row {
+			margin-top: 40px !important;
+		}
+
+		.add-comment-row {
+			cursor: pointer;
+		}
+
+        .username-text{
+            font-size:1.25rem; margin-right:20px;
+        }
+
+        .comment-created-text{
+            font-size:0.85rem !important;
+        }
+
+        .invitee-item{
+            margin-right:20px !important;
+            margin-top: 25px !important;
+        }
+
+        .request-info-row{
+            height:50px 
+            !important; 
+            z-index:1000; 
+            margin-top:8px !important;
+        }
+
+        .share-buttons{
+            margin-top:20px;
+        }
+
+        .user-search-result-row{
+            border-radius:3px !important;
+        }
+
+        .user-search-result-row:hover{
+            color: #ffea00 !important;
+            background:#9e9e9e !important;
+        }
+
+        .user-search-result-label:hover{
+            color: #ffea00 !important;
+        }
+
+		@media (max-width: 640px) {
+			.logo-link {
+				margin-left: 0px;
+			}
+
+            .share-buttons{
+                margin-top:115px;
+            }
+
+            .request-info-row{
+                margin-top:32px !important;
+                margin-bottom: 100px !important;
+            }
+
+            .reply-circle {
+			    font-size: 18px;
+			    line-height: 55px;
+			    color: #fff;
+			    background-color: #bdbdbd;
+			    text-align: center;
+			    width: 26px;
+			    height: 26px;
+			    overflow: hidden;
+			    left: 15px;
+			    display: inline-block;
+			    vertical-align: middle;
+			    border-radius: 50%;
+                margin-right:15px;
+		    }
+
+            .console-gamer-tag{
+                margin-top:5px;
+            }
+
+            .push-top{
+                margin-top:4px;
+            }
+
+            .title-text{
+                font-size:1.25rem !important;
+            }
+
+            .details-text{
+                font-size:0.85rem;
+                color: #9e9e9e !important;
+            }
+
+            .reply-text{
+                font-size:0.8rem !important;
+                margin-left:-20px !important;
+            }
+
+            .username-text{
+                font-size:0.8rem !important;
+                margin-left:-20px !important;
+            }
+
+            .comment-created-text{
+                font-size:0.6rem !important;
+            }
+		}
+	</style>
+
+	<template>
+		<paper-toolbar class="tall lfg-main-toolbar request-details-party request-content" style="display:none;">
+			<div id="request_header_dopple" class="profile-background-dopple"></div>
+			<div id="request_header" class="profile-background"></div>
+			<div class="profile-background-overlay"></div>
+			<div class="flex"></div>
+			<div class="middle title layout horizontal center-center">
+                <img class="request-list-image self-center" src="[[request.images.list_url]]" width="160" />
+            </div>
+			<div class="bottom title bottom-bar">
+				<h5 class="white-text text-shadow">{{request.gametitle}}</h5>
+			</div>
+		</paper-toolbar>
+
+        <div class="row request-info-row">
+            <div class$="[[getSystemClass(request.system)]]" style="height:100%;">
+                <h6 class="valign white-text">[[getSystemType(request.system)]]</h6>
+            </div>
+            <div class="col s12 m4 center center-align valign-wrapper layout horizontal center-center" style="height:100%; background-color:#E3E3E3;">
+                <h6 class="valign grey-text text-darken-2">[[getGamerCount(request.gamercount)]]</h6>
+            </div>
+            <div class="col s12 m4 center center-align valign-wrapper layout horizontal center-center" style="background-color:#F5F5F5; height:100%;">
+                
+                <template is="dom-if" if="{{request.mic}}">
+                    <i class="material-icons grey-text text-darken-1" style="font-size:1.15rem; margin-right:7px;">mic</i>
+                    <h6 class="valign grey-text text-darken-1">Mic Required</h6>
+                </template>
+                <template is="dom-if" if="{{!request.mic}}">
+                    <i class="material-icons grey-text text-lighten-1" style="font-size:1.15rem; margin-right:7px;">mic_off</i>
+                    <h6 class="valign grey-text text-lighten-1">Mic Not Required</h6>
+                </template>
+            </div>
+        </div>
+
+        <div class="layout horizontal center-center wrap share-buttons" style="width:100%;">
+            <a id="to_facebook" class="center center-align filter-tags tag-facebook" on-click="postToFacebook">
+                <i class="fa fa-share-alt"></i>&nbsp;&nbsp;
+                <i class="fa fa-facebook"></i>
+            </a>
+            <a id="to_twitter" class="center center-align filter-tags tag-twitter" on-click="postToTwitter">
+                <i class="fa fa-share-alt"></i>&nbsp;&nbsp;
+                <i class="fa fa-twitter"></i>
+            </a>
+        </div>
+
+        <br />
+
+        <div class="layout horizontal center-center"><h6 class="grey-text" style="font-size:0.85rem;">[[getTimeLapse(request.datetime)]]</h6></div>
+
+        <br />
+
+        <div class="row">
+            <div class="col s12 center center-align">
+                <h5 class="grey-text text-darken-2 light force-wrap title-text">[[request.title]]</h5>
+            </div>
+            <div class="col s12 center center-align">
+                <h6 class="grey-text text-darken-2 force-wrap details-text">[[request.description]]</h6>
+            </div>
+        </div>
+
+		<div class="white details-area request-details-party request-content" style="display:none;">
+			<br /><br /><br />
+
+			<div class="request-info-area">
+                <div class="divider" style="overflow:visible;">
+                    <div class="row">
+                        <div class="col s12 center center-aligned">
+                            <img id="profile_image" alt="" src="../assets/app/img/profile-photo-placeholder.jpg" style="position:relative; margin-top:-27px;" class="circle creator-profile-image" width="50" height="50" />
+                        </div>
+                        <div class="col s12 center center-align">
+                            <h6 class="thin grey-text text-darken-4">[[user.username]]</h6>
+                        </div>
+                    </div>
+                </div>
+				
+
+                <br /><br /><br />
+
+                <div class="layout horizontal center-center" style="width:100%;">
+                    <h5 class="grey-text thin" style="font-size:1.25rem;">Who wants to play?</h5>
+                </div>
+
+                <br />
+                <div class="layout horizontal center-center">
+                    <div class="console-gamer-tag">
+                        <template is="dom-if" if="{{buttonDisplayCondition}}">
+                            <a id="interested_button" on-click="addRequestForUser" class="center center-align play-neutral push-top"><i class="fa fa-hand-paper-o play-icon play-icon-neutral" style="margin-right:7px;"></i><span class="invite-button-text">I want to play</span></a>
+                        </template>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row want-to-play-area">
+                    <div class="layout horizontal wrap" style="margin-bottom:7px;">
+                        <template is="dom-repeat" items="{{interestedPlayers}}">
+                            <div class="layout vertical center-center invitee-item">
+                                <img src$="{{item.profilepic}}" class="responsive-img circle profile-place-holder" style="width:35px; height:35px;" />
+                                <label class="grey-text text-darken-2" style="font-size:0.85rem; margin-top:11px !important;">{{item.username}}</label>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <br />
+
+				<div class="row add-comment-row" style="margin-top:20px !important;">
+					<div class="col s12  add-comment-message" style="display:none;">
+						<i class="reply-circle" style="margin-right:30px; cursor:pointer;"></i>
+						<label class="grey-text text-lighten-1 reply-text" style="font-size:1.25rem; cursor:pointer;">Reply to request</label>
+					</div>
+
+                    <div class="col s12  sign-in-comment-message">
+                        <i class="reply-circle" style="margin-right:30px; cursor:pointer;"></i>
+                        <label class="grey-text text-lighten-1 reply-text" style="font-size:1.25rem; cursor:pointer;">Sign in to reply to this Request</label>
+                    </div>
+
+					<div class="lfg-input input-field col s12 add-comment-control add-comment-text" style="display:none;">
+						<textarea id="comment_text" type="text" placeholder="Say something nice" spellcheck="false" class="materialize-textarea" length="250"></textarea>
+                        <!--<div contenteditable="true" id="comment_text" spellcheck="false"></div>-->
+					</div>
+					<div class="col s12 center center-align add-comment-control add-comment-button" style="display:none;">
+						<a class="waves-effect waves-light btn orange darken-4 white-text" style="text-transform:none;" on-click="addComment">Post Comment</a>
+					</div>
+				</div>
+
+				<div id="request_comments_list" class="row comment-row">
+				</div>
+			</div>
+		</div>
+
+        <div id="tag_user_box" class="card grey darken-1" style="width:350px; display:none; z-index:10000 !important;">
+            <div class="layout horizontal">
+                <div class="flex"></div>
+                <div style="margin:7px 7px 0 0;">
+                    <a id="search_close_overlay" class="grey-text" style="cursor:pointer !important;" on-click="closeTagBox">
+                        <i class="material-icons small" style="font-size:1.5rem;">cancel</i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-content grey-text" style="padding-top: 0px !important; margin-top:-15px;">
+                <span class="card-title white-text" style="font-size:18px;">Tag a User</span>              
+                <div class="lfg-input-search input-field col s12" style="margin-top:0px;">
+                    <i class="material-icons prefix">search</i>
+                    <input style="margin-left:40px !important;" id="search_user" type="text" class="lfg-input-search validate" placeholder="Type the gamer's username">
+                </div>
+                <div class="user-search-loading layout vertical center" style="margin-top:20px; display:none;">
+                    <div class="preloader-wrapper big active" style="height:25px; width:25px;">
+                        <div class="spinner-layer spinner-yellow-only" style="border-color:#ffffff;">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div><div class="gap-patch">
+                                <div class="circle"></div>
+                            </div><div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-search-results" style="max-height:100px; overflow-y:auto; margin-top:20px; display:none;">
+                    <table id="user_results_table">
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+		<div id="details_loading_overlay" class="layout fit">
+			<div class="layout vertical fit center-center">
+				<div class="preloader-wrapper big active">
+					<div class="spinner-layer spinner-yellow-only" style="border-color:#ff9800;">
+						<div class="circle-clipper left">
+							<div class="circle"></div>
+						</div><div class="gap-patch">
+							<div class="circle"></div>
+						</div><div class="circle-clipper right">
+							<div class="circle"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</template>
+</dom-module>
+
+<script>
+	(function (window) {
+		var classElement = Polymer({
+
+			is: 'request-details-overlay',
+
+			/**
+			 * ...
+			 *
+			 * @attribute properties
+			 * @type object
+			 * @default
+			 */
+			properties: {
+				elementname: 'Request Details Overlay',
+				requestkey: {
+					type: String,
+					notify: true
+				}
+				/**
+				 * ...
+				 *
+				 * @attribute thingName
+				 * @type string
+				 * @default ''
+				 */
+			},
+
+			addComment: function () {
+				var customElem = this;
+				var requestkey = customElem.request.id;
+
+				var authJSON = sessionStorage.getItem(window.lfg.config.firebaseCacheKey);
+				var authData = JSON.parse(authJSON);
+
+				if (authData == null || authData == undefined) {
+					var localJSON = localStorage.getItem(window.lfg.config.firebaseCacheKey);
+					authData = JSON.parse(localJSON);
+				}
+
+				if (authData !== null && authData !== undefined) {
+					var userComment = $(customElem.$.comment_text).val();
+					//var userComment = $(customElem.$.comment_text).html();
+
+					if (userComment === null || userComment === undefined || userComment === '') {
+						$(customElem.$.comment_text).addClass('invalid');
+						return;
+					}
+
+				    //scrub for xss
+					var options = {
+					    whiteList: {}
+					};
+
+					var userComment = filterXSS(userComment, options);
+
+					var requestCommentRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'comments');
+					var newCommentRef = requestCommentRef.push({
+						requestkey: requestkey,
+						uid: authData.uid,
+						comment: userComment,
+						created: window.lfg.utils.convertDateToISO(Date.now())
+					});
+					var key = newCommentRef.key();
+
+					if (key !== null && key !== undefined && key !== '') {
+					    
+					    var uid = window.lfg.utils.getUser();
+
+					    //Add user to list of subscribers for request
+					    var requestSubscribersRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'requests/' + customElem.requestkey + '/subscribers');
+
+					    requestSubscribersRef
+                            .orderByChild('uid')
+                            .equalTo(uid)
+                            .once('value', function (snapshot) {
+                                var subscriber = snapshot.val();
+
+                                if ((subscriber == null || subscriber == undefined) && uid !== customElem.request.uid) {
+                                    //Add the user as a subscriber if they aren't the creator
+                                    requestSubscribersRef.push({ uid: uid });
+                                }
+
+
+                                var userRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + uid);
+
+                                //Email all subscribers that a new comment has been added
+                                userRef.once('value', function (userSnapshot) {
+                                    var user = userSnapshot.val();
+                                    var url = window.lfg.config.getCommentEmailUrl();
+                                    var system = customElem.getSystemType(customElem.request.system);
+
+                                    var data = {
+                                        requestid: customElem.request.id,
+                                        commenter: user.username,
+                                        creator: customElem.user.username,
+                                        gametitle: customElem.request.gametitle,
+                                        system: system
+                                    }
+
+                                    //Send email to all subscribers & creator as well (except the one sending)
+                                    $.ajax({
+                                        url: url,
+                                        type: 'GET',
+                                        cache: false,
+                                        data: data,
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            //maybe alert user it was success??
+                                        },
+                                        error: function (err) {
+                                        }
+                                    });
+                                });
+                            });
+					}
+
+					$('.add-comment-control').hide();
+					$('.add-comment-message').fadeIn();
+
+					$(customElem.$.comment_text).html('');
+				}
+				else {
+					//display error message for no user signed in
+				}
+			},
+
+			addRequestForUser: function (e) {
+			    var cusElem = this;
+			    var uid = window.lfg.utils.getUser();
+			    var requestid = cusElem.request.id;
+
+			    if ($('#interested_button').hasClass('invite-sent')) {
+                    //Nothing for now...
+			    }
+			    else {
+			        //save the request for the user, and also add the user to the players requested list for the request
+			        var userInterestedRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + uid + '/interestedrequests/' + requestid);
+			        var requestInterestedRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'requests/' + requestid + '/interestedplayers/' + uid);
+
+			        userInterestedRef.set({
+			            requestid: requestid,
+			            gametitle: cusElem.request.gametitle,
+			            title: cusElem.request.title,
+			            description: cusElem.request.description,
+			            system: cusElem.request.system,
+			            images: cusElem.request.images,
+			            created: cusElem.request.created
+			        });
+
+			        requestInterestedRef.set({ uid: uid });
+
+			        //Add the user to the subscriber's list for that request - as long as they are not the creator
+			        if (uid !== cusElem.request.uid) {
+			            var requestSubsRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'requests/' + requestid + '/subscribers');
+
+			            requestSubsRef
+                            .orderByChild('uid')
+                            .equalTo(uid)
+                            .once('value', function (subsSnapshot) {
+                                var subscriberObj = subsSnapshot.val();
+
+                                if (subscriberObj === null || subscriberObj === undefined) {
+                                    //add the user as a subscriber
+                                    requestSubsRef.push({ uid: uid });
+                                }
+			            });
+			        }
+
+			        //alert the user; mark the icon as invited (with the invite sent class); send email to owner of request
+			        $('#interested_button').removeClass('play-neutral').addClass('play-selected');
+			        $('#interested_button').find('.play-icon').removeClass('play-icon-neutral').addClass('play-icon-selected').removeClass('fa-hand-paper-o').addClass('fa-check-circle');
+			        $('#interested_button').find('.invite-button-text').html('I want to play');
+			        $('#interested_button').addClass('invite-sent');
+
+			        var uid = window.lfg.utils.getUser();
+			        var userRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + uid);
+
+                    //Get the username of the current user
+			        userRef.once('value', function (snapshot) {
+			            var user = snapshot.val();
+
+                        //Make sure the creator's email is verified
+			            if (user !== null && user !== undefined) {
+			                var url = window.lfg.config.getInviteRequestUrl();
+			                var system = cusElem.getSystemType(cusElem.request.system);
+
+			                var data = {
+			                    requestid: cusElem.request.id,
+			                    invitee: user.username,
+			                    gametitle: cusElem.request.gametitle,
+			                    system: system
+			                }
+
+			                //Send email to creator of the request
+			                $.ajax({
+			                    url: url,
+			                    type: 'GET',
+			                    cache: false,
+			                    data: data,
+			                    dataType: 'json',
+			                    success: function (data) {
+                                    //maybe alert user it was success??
+			                    },
+			                    error: function (err) {
+			                    }
+			                });
+			            }
+			        });
+			    }
+			},
+
+			checkInviteStatus: function(){
+			    //Checks to see if an invite was requested for the user
+			    var cusElem = this;
+
+                //I am totally embarassed about this hack :\ but I'm on a tight deadline...
+			    setTimeout(function () {
+			        var uid = window.lfg.utils.getUser();
+			        var requestid = cusElem.request.id;
+
+			        var requestInterestedRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'requests/' + requestid + '/interestedplayers/' + uid);
+
+			        requestInterestedRef.once('value', function (snapshot) {
+			            var data = snapshot.val();
+
+			            if (data !== null && data !== undefined) {
+			                $('#interested_button').removeClass('play-neutral').addClass('play-selected');
+			                $('#interested_button').find('.play-icon').removeClass('play-icon-neutral').addClass('play-icon-selected').removeClass('fa-hand-paper-o').addClass('fa-check-circle');
+			                $('#interested_button').addClass('invite-sent');
+			                $('#interested_button').find('.invite-button-text').html('I want to play');
+			            }
+			        });
+			    }, 250);
+
+			},
+
+			getGamerCount: function (count) {
+				if (count <= 1) {
+					return '1 Gamer';
+				}
+				else {
+					return count + ' Gamers';
+				}
+			},
+
+			getSystemType: function (system) {
+
+				switch (system) {
+
+					case 'pc':
+						return 'PC';
+						break;
+
+					case 'ps3':
+						return 'PS3';
+						break;
+
+					case 'ps4':
+						return 'PS4';
+						break;
+
+					case 'xbox360':
+						return 'Xbox 360';
+						break;
+
+					case 'xboxOne':
+						return 'Xbox One';
+						break;
+
+					case 'wii':
+						return 'Wii';
+						break;
+
+					case 'wiiu':
+						return 'Wii U';
+						break;
+				}
+			},
+
+			getSystemClass: function (system) {
+
+			    var tagClass = "col s12 m4 valign-wrapper layout horizontal center-center ";
+
+				switch (system) {
+
+					case 'pc':
+					    return tagClass + 'pc-label-tag';
+						break;
+
+					case 'ps3':
+					    return tagClass + 'psn-label-tag';
+						break;
+
+					case 'ps4':
+					    return tagClass + 'psn-label-tag';
+						break;
+
+					case 'xbox360':
+					    return tagClass + 'xbox-label-tag';
+						break;
+
+					case 'xboxOne':
+					    return tagClass + 'xbox-label-tag';
+						break;
+
+					case 'wii':
+					    return tagClass + 'wii-label-tag';
+						break;
+
+					case 'wiiu':
+					    return tagClass + 'wii-label-tag';
+						break;
+				}
+			},
+
+			getTimeLapse: function (date) {
+				var convDate = new Date(date);
+				return window.lfg.utils.timeSince(window.lfg.utils.convertUtcToLocalDate(convDate));
+			},
+
+			getInviteRequestors: function(){
+                //retrieves the list of people who want to play the game for the request
+			},
+
+			goToList: function () {
+				document.querySelector('app-router').go('/');
+			},
+
+			isImageBlank: function (url) {
+				return (url == null || url == undefined || url == '');
+			},
+
+			setCommentId: function (id) {
+				return 'div_' + id;
+			},
+
+			convertDateToUtc: function (date) {
+				return window.lfg.utils.convertDateToUtc(date);
+			},
+
+			formatDate: function (utc) {
+				return window.lfg.utils.convertUtcToLocal(utc);
+			},
+
+			formatMicRequest: function (mic) {
+				return mic ? 'Required' : 'Not Required';
+			},
+
+			formatSystem: function (system) {
+				switch (system) {
+					case 'pc':
+						return 'PC';
+						break;
+
+					case 'ps3':
+						return 'PS3';
+						break;
+
+					case 'ps4':
+						return 'PS4';
+						break;
+
+					case 'xbox360':
+						return 'Xbox 360';
+						break;
+
+					case 'xboxOne':
+						return 'Xbox One';
+						break;
+
+					case 'wii':
+						return 'Wii';
+						break;
+
+					case 'wiiu':
+						return 'Wii U';
+						break;
+
+					case 'steam':
+						return 'Steam';
+						break;
+				}
+			},
+
+			getCommenter: function (comment) {
+			    var cusElem = this;
+
+			    var matchedCommenter = _.findWhere(cusElem.retrievedCommenters, { uid: comment.uid });
+
+			    if (matchedCommenter !== null && matchedCommenter !== undefined) {
+
+			        //We got the commentr already, use what we have from before
+			        var userLabel = document.getElementById('label_' + comment.id);
+			        if (userLabel !== null && userLabel !== undefined) {
+			            $(userLabel).html(matchedCommenter.username);
+			        }
+
+			        var profilepic = snapshot.val();
+			        if (profilepic !== null && profilepic !== undefined) {
+
+			            var profileImage = document.getElementById('img_' + comment.id);
+
+			            if (profileImage !== null && profileImage !== undefined) {
+			                profileImage.src = matchedCommenter.profilepic;
+			            }
+			        }
+			    }
+			    else {
+			        //Hack - don't want to pull the whole user object down
+			        var usernameRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + comment.uid + '/username');
+			        var profilepicRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + comment.uid + '/profilepic');
+
+			        usernameRef.once("value", function (snapshot) {
+			            var username = snapshot.val();
+			            if (username !== null && username !== undefined) {
+
+			                var userLabel = document.getElementById('label_' + comment.id);
+
+			                if (userLabel !== null && userLabel !== undefined) {
+			                    $(userLabel).html(username);
+			                }
+
+			                var matchedComm = _.findWhere(cusElem.retrievedCommenters, { uid: comment.uid });
+			                if (matchedComm !== null || matchedComm !== undefined) {
+			                    var commenter = {
+			                        uid: comment.uid,
+			                        username: username
+			                    }
+			                    cusElem.retrievedCommenters.push(cusElem.retrievedCommenters)
+			                }
+			                else {
+			                    matchedComm.username = username;
+			                }
+			            }
+			        });
+
+			        profilepicRef.once("value", function (snapshot) {
+			            var profilepic = snapshot.val();
+			            if (profilepic !== null && profilepic !== undefined) {
+
+			                var profileImage = document.getElementById('img_' + comment.id);
+
+			                if (profileImage !== null && profileImage !== undefined) {
+			                    profileImage.src = profilepic;
+			                }
+
+			                var matchedComm = _.findWhere(cusElem.retrievedCommenters, { uid: comment.uid });
+			                if (matchedComm !== null || matchedComm !== undefined) {
+			                    var commenter = {
+			                        uid: comment.uid,
+			                        profilepic: profilepic
+			                    }
+			                    cusElem.retrievedCommenters.push(cusElem.retrievedCommenters)
+			                }
+			                else {
+			                    matchedComm.profilepic = profilepic;
+			                }
+			            }
+			        });
+			    }
+			},
+
+			getComments: function (requestkey) {
+				var customElem = this;
+				var commentsRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'comments');
+
+				//Get the latest comment added
+				commentsRef.orderByChild('requestkey').equalTo(requestkey).on('child_added', function (childsnapshot) {
+					var commentHtml = '';
+					var comment = childsnapshot.val();
+					comment.id = childsnapshot.key();
+
+					var requestcomment = {
+						id: comment.id,
+						comment: comment.comment,
+						created: customElem.getTimeLapse(comment.created),
+						requestkey: comment.requestkey,
+						uid: comment.uid,
+						userimgid: 'img_' + comment.id,
+						userlabelid: 'label_' + comment.id,
+						user: {}
+					}
+
+					//customElem.request.comments.push(requestcomment);
+					//customElem.notifyPath('request.comments', customElem.request.comments);
+
+					customElem.request.comments.push(requestcomment);
+
+                    //Comment styles located in lfg.css
+					commentHtml += '<div class="col s12" style="margin-bottom:30px;">';
+					commentHtml += '<img id="' + requestcomment.userimgid + '" src="../assets/app/img/profile-photo-placeholder.jpg" class="reply-circle"  />';
+					commentHtml += '<span><label id="' + requestcomment.userlabelid + '" class="grey-text text-darken-3 username-text"></label>';
+					commentHtml += '<label class="grey-text comment-created-text">' + requestcomment.created + '</label>';
+					commentHtml += '</span>';
+					commentHtml += '<p class="force-wrap comment-details-text">' + requestcomment.comment + '</p>';
+					commentHtml += '</div>';
+
+					$(customElem.$.request_comments_list).prepend(commentHtml);
+
+					//Get Commenter and their profile image
+					customElem.getCommenter(requestcomment);
+				});
+			},
+
+			getRequest: function (key) {
+				var customElem = this;
+				var requestRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'requests/' + customElem.requestkey);
+				var uid = window.lfg.utils.getUser();
+
+				requestRef.once('value', function (snapshot) {
+				    //I LUV U Firebase :D. Data will be read once for initial request
+					var comments = [];
+					var request = snapshot.val();
+					request.id = snapshot.key();
+
+					customElem.request = request;
+					customElem.request.comments = comments;
+
+					//Set the request changed handler for any new comments
+					customElem.getComments(request.id);
+					customElem.setCoverImage();
+					customElem.getUserProfile(request);
+					customElem.markAsRecent(request.id);
+
+					$(customElem.$.details_loading_overlay).hide(0, function () {
+						$('.request-content').fadeIn();
+					});
+
+					customElem.setRequestUrl(request.id);
+					customElem.buttonDisplayCondition = window.lfg.utils.isLoggedIn() && (uid !== request.uid);
+					customElem.checkInviteStatus();
+
+				    //Get interested players
+					customElem.getInterestedPlayers();
+				});
+			},
+
+			getInterestedPlayers: function () {
+			    var cusElem = this;
+
+			    if (cusElem.request !== null && cusElem.request !== undefined) {
+			        var interestedUidsArray = _.map(cusElem.request.interestedplayers, function (elem, key) {
+			            return key;
+			        });
+
+			        if (interestedUidsArray) {
+			            _.each(interestedUidsArray, function (uid, index) {
+
+			                //store the last interested player recieved from the once('value') function
+			                if (index === (interestedUidsArray.length - 1)) {
+			                    cusElem.lastInterestedPlayer = uid;
+			                }
+
+			                var userRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + uid);
+			                userRef.orderByPriority().once('value', function (snapshot) {
+			                    var user = snapshot.val();
+
+			                    if (user) {
+			                        cusElem.push('interestedPlayers', user);
+			                        cusElem.notifyPath('interestedPlayers', cusElem.interestedPlayers);
+			                    }
+			                });
+			            })
+			        }
+
+			        //set an "on" firebase event for any other additions
+			        var newInviteesRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'requests/' + cusElem.request.id + '/interestedplayers');
+			        var lastInterestedUid = interestedUidsArray[interestedUidsArray.length - 1];
+
+			        newInviteesRef
+                        .orderByChild('uid')
+                        .startAt(lastInterestedUid)
+                        .on('child_added', function (childSnapshot) {
+                            var addedUser = childSnapshot.val();
+
+                            if (addedUser && childSnapshot.key() !== cusElem.lastInterestedPlayer) {
+
+                                var interestedUid = childSnapshot.key();
+                                var interestedUserRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + interestedUid);
+
+                                interestedUserRef.once('value', function (snapshot) {
+                                    var interestedUser = snapshot.val();
+
+                                    if (interestedUser) {
+                                        cusElem.push('interestedPlayers', interestedUser);
+                                        cusElem.notifyPath('interestedPlayers', cusElem.interestedPlayers);
+                                    }
+                                });
+                            }
+                        });
+			    }
+			},
+
+			getUserProfile: function (request) {
+				var cusElem = this;
+				var usernameRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + request.uid + '/username');
+				var usernamelowercaseRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + request.uid + '/usernamelowercase');
+				var profilepicRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + request.uid + '/profilepic');
+
+				usernameRef.once("value", function (snapshot) {
+				    var username = snapshot.val();
+
+					if (username !== null && username !== undefined) {
+					    cusElem.user.username = username;
+					    cusElem.notifyPath('user.username', cusElem.user.username);
+					}
+				});
+
+				usernamelowercaseRef.once("value", function (snapshot) {
+				    var usernamelowercase = snapshot.val();
+
+				    if (usernamelowercase !== null && usernamelowercase !== undefined) {
+				        cusElem.user.usernamelowercase = usernamelowercase;
+				        cusElem.notifyPath('user.usernamelowercase', cusElem.user.usernamelowercase);
+				    }
+				});
+
+				profilepicRef.once("value", function (snapshot) {
+				    var profilepic = snapshot.val();
+
+				    if (profilepic !== null && profilepic !== undefined) {
+				        cusElem.user.profilepic = profilepic;
+				        var profileImage = document.getElementById("profile_image");
+
+				        if (profileImage !== null && profileImage !== undefined) {
+				            profileImage.src = profilepic;
+				        }
+				    }
+				});
+			},
+
+			getRequestKey: function () {
+				//app-router doesn support Polymer 1.0. Get hash and requestkey manually
+
+				if (this.requestkey === null || this.requestkey === undefined || this.requestkey === '') {
+					var hash = window.location.hash;
+					this.requestkey = hash.substring(hash.lastIndexOf('/') + 1);
+				}
+			},
+
+			getLookupData: function () {
+				//Gets lookup data from Giant Bomb
+				var config = window.lfg.config;
+				$.get(config.appUrl)
+			},
+
+			isLoggedIn: function () {
+			    var cusElem = this;
+
+			    if (window.lfg.utils.isLoggedIn()) {
+			        var userRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + authData.uid);
+
+			        //Get the user profile info. If none exists, redirect to Onboarding process...
+			        userRef
+                        .once('value', function (snapshot) {
+                            var user = snapshot.val();
+                            if (user === null || user === undefined || user.setupcomplete === null || user.setupcomplete === undefined || user.setupcomplete === '' || user.setupcomplete === false) {
+                                cusElem.loggedIn = false;
+                                $('.add-comment-message').remove();
+                            }
+                            else {
+                                cusElem.loggedIn = true;
+                                $('.sign-in-comment-message').hide();
+                                $('.add-comment-message').show();
+                            }
+                        });
+			    }
+			    else {
+			        $('.add-comment-message').remove();
+			    }
+			},
+
+			markAsRecent: function (requestid) {
+			    var customElem = this;
+			    var userid = window.lfg.utils.getUser();
+
+			    if (userid !== null && userid !== undefined && userid !== '') {
+			        var recentRequestRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + userid + '/recentrequests');
+
+			        recentRequestRef
+                        .orderByChild('requestid')
+                        .equalTo(requestid)
+                        .once('value', function (snapshot) {
+                            var item = snapshot.val();
+
+                            //commented - for now, messes up paging on recent requests
+                            //if (item !== null && item !== undefined) {
+                            //    var itemArray = _.map(item, function (elem, key) { elem.id = key; return elem; });
+                            //    _.each(itemArray, function (elem, index) {
+                            //        var recordkey = elem.id;
+                            //        var recentRequestItemRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + userid + '/recentrequests/' + recordkey);
+                            //        recentRequestItemRef.remove();
+                            //    });
+                            //}
+                            
+                            //add the record
+                            var newHistory = {
+                                requestid: requestid
+                            };
+
+                            var lexicoIndex = window.lfg.utils.getSearchIndex(customElem.convertDateToUtc(Date.now()));
+                            newHistory.requestindex = lexicoIndex;
+
+                            var timeNow = window.lfg.utils.convertDateToUtc(Date.now());
+                            var index = 0 - timeNow;
+
+                            newHistory.index = index;
+                            recentRequestRef.push(newHistory);
+                        });
+			    }
+			},
+
+			postToFacebook: function () {
+				//message : options.message,
+				//name : options.title,
+				//link : options.url,
+				//description : options.description,
+				//picture : options.image
+
+				var authJSON = sessionStorage.getItem(window.lfg.config.firebaseCacheKey);
+				var authData = JSON.parse(authJSON);
+
+				if (authData == null || authData == undefined) {
+					var localJSON = localStorage.getItem(window.lfg.config.firebaseCacheKey);
+					authData = JSON.parse(localJSON);
+				}
+
+				var message = 'Find gamers to play ' + this.request.gametitle + ' on ' + this.formatSystem(this.request.system) + ' with Parallel';
+
+				//if(authData !== null && authData !== undefined && authData.uid === this.request.uid){
+				//	message = 'I created a gaming request for ' + this.request.gametitle + ' on the Parallel app';
+				//}
+
+				var options = {
+					entityId: this.request.id,
+					entityType: 'request',
+					gametitle: this.request.gametitle,
+					system: this.formatSystem(this.request.system),
+					description: message,
+					photo: this.request.images.list_url
+				};
+
+				window.lfg.utils.postToFacebook(options);
+			},
+
+			postToTwitter: function () {
+
+				var authJSON = sessionStorage.getItem(window.lfg.config.firebaseCacheKey);
+				var authData = JSON.parse(authJSON);
+
+				if (authData == null || authData == undefined) {
+					var localJSON = localStorage.getItem(window.lfg.config.firebaseCacheKey);
+					authData = JSON.parse(localJSON);
+				}
+
+				var message = 'Check out this gaming request to play ' + this.request.gametitle + ' for ' + this.formatSystem(this.request.system) + ' on the Parallel app';
+
+				if (authData !== null && authData !== undefined && authData.uid === this.request.uid) {
+					message = 'I created a gaming request to play ' + this.request.gametitle + ' on ' + this.formatSystem(this.request.system) + ' with the Parallel app. Check it out';
+				}
+
+				var encodedMessage = encodeURIComponent(message);
+
+				var options = {
+					entityId: this.request.id,
+					entityType: 'request',
+					message: encodedMessage
+				};
+
+				window.lfg.utils.tweetOnTwitter(options);
+			},
+
+			searchUser: function (e) {
+			    var cusElem = this;
+			    var query = $(e.target).val();
+
+			    if (query === '') {
+			        $(cusElem.$.user_results_table).find('tbody').html('');
+			        return;
+			    }
+
+			    $(cusElem.$.user_results_table).find('tbody').html('');
+			    $(cusElem.$.tag_user_box).find('.user-search-results').hide();
+			    $(cusElem.$.tag_user_box).find('.user-search-loading').show();
+
+			    //perform user firebase search
+			    var userRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users');
+			    userRef
+                    .orderByChild('usernamelowercase')
+                    .startAt(query.toLowerCase())
+                    .endAt(query.toLowerCase() + '~')
+                    .once("value", function (snapshot) {
+			            var users_data = snapshot.val();
+			            if (users_data !== null && users_data !== undefined) {
+			                //map all results
+			                var user_results = _.map(users_data, function (userItem, userKey) { userItem.id = userKey; return userItem; });
+			                var listHtml = '';
+
+			                //List search results in the results table
+			                _.each(user_results, function (user) {
+			                    listHtml += '<tr class="user-search-result-row">';
+			                    listHtml += '<td class="layout horizontal" style="cursor:pointer;">';
+			                    listHtml += '<img src="' + user.profilepic + '" alt="" style="position:relative; margin-right:15px; height:20px; width:20px; border:1px solid #ffffff;" class="circle search-profile-image">';
+			                    listHtml += '<label class="white-text user-search-result-label" style="font-size:0.9rem; cursor:pointer;">' + user.username + '</label>';
+			                    listHtml += '<input type="hidden" class="user-search-results-id" value="' + user.id + '" />';
+			                    listHtml += '<input type="hidden" class="user-search-results-usernamelowercase" value="' + user.usernamelowercase + '" />';
+			                    listHtml += '</td></tr>';
+			                });
+
+			                //add html
+			                $(cusElem.$.user_results_table).find('tbody').html(listHtml);
+			                $(cusElem.$.tag_user_box).find('.user-search-loading').hide();
+			                $(cusElem.$.tag_user_box).find('.user-search-results').show();
+			            }
+			        });
+
+			},
+
+			setCoverImage: function () {
+				var images = this.request !== null && this.request !== undefined ? this.request.images : {};
+
+				if (images.list_url !== null && images.list_url !== undefined && images.list_url !== '') {
+					//set the contents to our property
+					var cusElem = this;
+
+					var toolbar = cusElem.$.request_header;
+					var toolbarDopple = cusElem.$.request_header_dopple;
+
+					toolbar.style.backgroundImage = "url('" + images.list_url + "')";
+					toolbarDopple.style.backgroundImage = "url('" + images.list_url + "')";
+				}
+			},
+
+			setRequestUrl: function(requestid){
+			    window.history.pushState('object or string', 'Request Details', window.lfg.utils.getSharableRequestUrl(requestid));
+			},
+
+
+			showCommentField: function () {
+			    var cusElem = this;
+			    $(cusElem.$.comment_text).val('');
+				$('.add-comment-message').hide(0, function () {
+					$('.add-comment-control').fadeIn();
+					$(cusElem.$.comment_text).focus();
+				});
+			},
+
+			showUserSearchAtCords: function(top, left){
+			    var tab_box = document.getElementById('tag_user_box');
+			    tab_box.style.position = "absolute";
+			    tab_box.style.left = left;
+			    tab_box.style.top = top;
+
+			    tab_box.style.display = "block";
+			},
+
+			startUserTagging: function(e){
+			    //determing if the @ character was typed
+			    var cusElem = this;
+
+			    if ((e.keyCode || e.which) === 64) {
+			        var caretPosition = $(e.target).caret('position');
+			        var parentDivPosition = window.lfg.utils.getAbsolutePosition(cusElem.$.comment_text);
+			        console.log('Left: ' + caretPosition.left);
+			        console.log('Top: ' + caretPosition.top);
+			        console.log('Height: ' + caretPosition.height);
+
+			        console.log('Parent Left: ' + parentDivPosition.left);
+			        console.log('Parent Top: ' + parentDivPosition.top);
+
+			        cusElem.$.tag_user_box.style.position = "absolute";
+			        cusElem.$.tag_user_box.style.left = (caretPosition.left + parentDivPosition.left + cusElem.$.tag_user_box.offsetWidth).toString() + 'px';
+			        cusElem.$.tag_user_box.style.top = (parentDivPosition.top + caretPosition.height + caretPosition.top).toString() + 'px';
+
+			        //Save the current caret position "relative to the string within the content editable div"
+			        cusElem.currentCaretPosition = window.lfg.utils.getEditableDivCaretPosition();
+
+			        setTimeout(function () {
+			            $(cusElem.$.tag_user_box).show(0, function () {
+			                $(cusElem.$.tag_user_box).find('#search_user').focus();
+			                $(cusElem.$.tag_user_box).find('#search_user').val('');
+
+			                //Remove the newly entered '@' char at this index
+			                var user_comment = $(cusElem.$.comment_text).html();
+			                user_comment = user_comment.slice(0, cusElem.currentCaretPosition) + user_comment.slice(cusElem.currentCaretPosition + 1);
+			                $(cusElem.$.comment_text).html(user_comment);
+			            });
+			        }, 1);
+			        console.log('Tag Box Top Position: ' + (parentDivPosition.top + caretPosition.height));
+			    }
+			},
+
+			tagUser: function (e) {
+			    var cusElem = this;
+			    var element = e.target;
+
+			    var element = e.target;
+			    if (element.tagName.toLowerCase() !== 'tr') {
+			        element = $(e.target).parents('tr').get(0);
+			    }
+
+			    //Get the username, uid & usernamelowercase
+			    var taggedUser = {
+			        username: $(element).find('.user-search-result-label').html(),
+			        uid: $(element).find('.user-search-results-id').val(),
+			        usernamelowercase: $(element).find('.user-search-results-usernamelowercase').html(),
+			    };
+
+			    var matchedUser = _.findWhere(cusElem.taggedUsers, { uid: taggedUser.uid });
+			    if (matchedUser == null || matchedUser == undefined) {
+			        cusElem.taggedUsers.push(taggedUser);
+			    }
+
+			    //Now insert the username in the textbox
+			    var insertusername = '[@' + taggedUser.username + ']';
+			    var comment_text = $(cusElem.$.comment_text).html();
+			    var entryHTML = '<span class="user-mention">' + insertusername + '</span>';
+			    comment_text = [comment_text.slice(0, cusElem.currentCaretPosition), entryHTML, comment_text.slice(cusElem.currentCaretPosition)].join('');
+
+			    $(cusElem.$.comment_text).html(comment_text);
+			    //alert("User tagged: " + taggedUser.username);
+
+			    $(cusElem.$.user_results_table).find('tbody').html('');
+			    $(cusElem.$.tag_user_box).find('.user-search-results').hide();
+			    $(cusElem.$.tag_user_box).hide();
+
+			    $(cusElem.$.comment_text).focus();
+			},
+
+			verifyTaggedUsers: function(){
+
+			},
+
+			initializeData: function () {
+			   
+			    this.buttonDisplayCondition = null;
+			    this.loggedIn = null;
+			    this.isLoggedIn();
+
+				this.getRequestKey();
+				this.request = {
+					comments: []
+				};
+				this.user = {
+				    username: '',
+				    usernamelowercase: '',
+                    profilepic: ''
+				};
+				this.interestedPlayers = [];
+				this.lastInterestedPlayer = null;
+				this.currentCaretPosition = 0;
+				this.taggedUsers = [];
+				this.retrievedCommenters = [];
+			},
+
+			registerPlugins: function () {
+			},
+
+			registerEvents: function () {
+			    var cusElem = this;
+
+			    //Turn off any previous 'on's
+			    $('.comment-hidden-trigger').off('change');
+			    $(document).off('click', '.add-comment-message');
+			    $(document).off('click', '.sign-in-comment-message');
+			    $(document).off('input', '#comment_text');
+			    //$(document).off('keypress', '#comment_text');
+			    //$(document).off('input', '#search_user');
+
+                //Now turn on events
+			    $('.comment-hidden-trigger').on('change', function () {
+			        alert($(this).val());
+			    });
+
+			    $(document).on('click', '.add-comment-message', cusElem.showCommentField.bind(cusElem));
+				$(document).on('click', '.sign-in-comment-message', function () { document.querySelector('app-router').go('/login'); });
+				$(document).on('input', '#comment_text', function (e) {
+				    var cusElem = this;
+				    $(e.target).removeClass('invalid');
+				    //cusElem.startUserTagging;
+				}.bind(this));
+				//$(document).on('keypress', '#comment_text', cusElem.startUserTagging.bind(this));
+				//$(document).on('input', '#search_user', _.debounce(cusElem.searchUser.bind(cusElem), 1000));
+				//$(document).on('click', '.user-search-result-row', cusElem.tagUser.bind(cusElem));
+				
+			},
+
+			created: function () {
+				//Part of Polymer lifecycle
+			},
+
+			ready: function () {
+				this.initializeData();
+			},
+
+			attached: function () {
+				//called after ready();
+				this.registerPlugins();
+				this.registerEvents();
+				this.getRequest(this.requestkey);
+			}
+		});
+    })(window);
+</script>

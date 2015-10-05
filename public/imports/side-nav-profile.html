@@ -1,0 +1,69 @@
+﻿<link rel="import" href="../components/bower_components/polymer/polymer.html">
+<!--<link rel="import" href="../imports/layout.html">-->
+<!-- Fonts -->
+<link rel='import' href='../components/bower_components/font-roboto/roboto.html'>
+
+<dom-module id="side-nav-profile">
+	<!-- CSS -->
+	<link rel="import" type="css" href='../assets/app/css/lfg.css'>
+
+	<style>
+		:host {
+		}
+
+		iron-icon {
+			margin-right: 1.5em;
+			color: #ffffff;
+		}
+
+		paper-item {
+			color: #ffffff;
+			cursor: pointer;
+		}
+	</style>
+
+	<template>
+		<div class="layout vertical fit center-center" style="top:-55px;">
+            <a href="#/requests" style="cursor:pointer;">
+                <img src="../assets/app/img/logo-orange-60-60-light.png" />
+                <h6 class="white-text" style="font-size:12px; margin-top:3px;">parallel <span style="font-weight:600;">BETA</span></h6>
+            </a>
+        </div>
+	</template>
+</dom-module>
+
+<script>
+    (function(window) {
+        var constructor = Polymer({
+
+        	is: 'side-nav-profile',
+
+            /**
+             * ....
+             *
+             * @attribute properties
+             * @type object
+             * @default
+             */
+            properties: {
+            },
+
+        	/* Functions */
+
+
+            /* Init */
+            initializeData: function () {
+            },
+
+            registerEvents: function () {
+            },
+
+            registerPlugins: function() {
+            },
+
+			/* Events */
+            ready: function () {
+            },
+        });
+    })(window);
+</script>

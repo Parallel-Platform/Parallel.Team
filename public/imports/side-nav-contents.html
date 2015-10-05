@@ -1,0 +1,293 @@
+﻿<link rel="import" href="../components/bower_components/polymer/polymer.html">
+<!--<link rel="import" href="../imports/layout.html">-->
+
+<!-- Fonts -->
+<link rel='import' href='../components/bower_components/font-roboto/roboto.html'>
+
+<dom-module id="side-nav-contents">
+	<!-- CSS -->
+	<link rel="import" type="css" href='../assets/app/css/lfg.css'>
+
+	<style>
+		:host {
+		}
+
+		iron-icon {
+			margin-right: 1.5em;
+			color: #ffffff;
+		}
+
+		paper-item {
+			color: #ffffff;
+			cursor: pointer;
+            padding:0;
+		}
+
+		.sign-in-button {
+			display:block;
+			background-color:transparent; 
+			color: #ffffff;
+			font-size:1rem; 
+			padding:6px 18px; 
+			border:solid 2px #ffffff; 
+			border-radius:5px;
+			cursor:pointer;
+			/*width:100%;*/
+			margin: 0 15px !important;
+			margin-top:10px !important;
+			max-height:60px !important;
+			text-align:center;
+			cursor:pointer;
+		}
+
+		.sign-in-button:hover {
+			color: #e65100;
+			background-color: #ffff00;
+			border-color: #ffff00;
+			font-weight:500;
+			box-shadow: 0 2px 5px 0 #e65100;
+		}
+
+        .nav-links {
+            display:block;
+            width:100%;
+            padding:12px 16px;
+            font-size:18px;
+            cursor:pointer;
+        }
+
+        .nav-link-label{
+            font-size:0.9rem;
+        }
+
+        .arrow-left {
+	        width: 0; 
+	        height: 0; 
+	        border-top: 15px solid transparent;
+	        border-bottom: 15px solid transparent; 	
+	        border-right:15px solid #ffffff; 
+            float:right; 
+            margin-right:-20px;
+            margin-top:-2px;
+        }
+
+        .nav-links span{
+            font-weight:300;
+        }
+	</style>
+
+	<template>
+		<div id="nav_links" style="padding-top:20px; display:none;">
+            <a data-path="requests" href="#/" class="white-text nav-links login-required">
+                <iron-icon icon="view-day"></iron-icon>
+                <span class="thin nav-link-label">Requests</span>
+                <span class="arrow-left" style="display:none;"></span>
+            </a>
+            <a data-path="recent" href="#/recent" class="white-text nav-links login-required">
+                <iron-icon icon="history"></iron-icon>
+                <span class="thin nav-link-label">Recent Requests</span>
+                <span class="arrow-left" style="display:none;"></span>
+            </a>
+            <a data-path="userrequests" href="#/userrequests" class="white-text nav-links login-required">
+                <iron-icon icon="bookmark-border"></iron-icon>
+                <span class="thin nav-link-label">My Requests</span>
+                <span class="arrow-left" style="display:none;"></span>
+            </a>
+            <a data-path="games" href="#/games" class="white-text nav-links login-required">
+                <iron-icon icon="hardware:gamepad"></iron-icon>
+                <span class="thin nav-link-label">My Games</span>
+                <span class="arrow-left" style="display:none;"></span>
+            </a>
+            <br />
+            <!--<a data-path="about" href="#/landing" class="white-text nav-links">
+                <iron-icon icon="info-outline"></iron-icon>
+                <span class="thin nav-link-label">About</span>
+                <span class="arrow-left" style="display:none;"></span>
+            </a>-->
+            <a data-path="settings" href="#/settings" class="white-text nav-links login-required">
+                <iron-icon icon="build"></iron-icon>
+                <span class="thin nav-link-label">Settings</span>
+                <span class="arrow-left" style="display:none;"></span>
+            </a>
+            <template is="dom-if" if="{{loggedIn}}">
+                <a class="white-text nav-links login-required" on-click="logOut">
+                    <iron-icon icon="arrow-back"></iron-icon>
+                    <span class="thin nav-link-label">Sign Out</span>
+                </a>
+            </template>
+		</div>
+
+        <br />
+
+        <div class="layout horizontal center-center" style="margin-bottom:6px; padding:0 14px 0 20px;">
+            <a href="#/landing" class="btn white-text thin orange darken-1" style="margin-left:-6px; font-size:0.8rem; width:100%;">About Parallel</a>
+        </div>
+
+        <br />
+
+        <!-- Giantbomb & Steam-->
+        <div class="layout vertical" style="width:100%; bottom:0; margin-bottom:20px;">
+            <div class="layout horizontal center-center" style="margin-bottom:6px;"><h6 class="white-text thin" style="margin-left:-6px; font-size:0.8rem;">Powered By</h6></div>
+
+            <div class="layout horizontal" style="width:100%; padding:0 37px;">
+                <a href="http://www.giantbomb.com/" style="cursor:pointer;"><img src="../assets/app/img/giantbomb.jpg" class="circle responsive-img" width="20" height="20" style="margin-right:3px;  border:solid 1px #ffffff;" /></a>
+                <a href="http://www.giantbomb.com/" class="white-text" style="cursor:pointer; margin-right:15px;">
+                    <span class="thin" style="font-size:0.85rem;">Giant Bomb</span>
+                </a>
+                <a href="http://store.steampowered.com/" style="cursor:pointer;"><img src="../assets/app/img/steam.png" class="responsive-img circle" width="20" height="20" style="margin-right:3px;  border:solid 1px #ffffff;" /></a>
+                <a href="http://store.steampowered.com/" class="white-text" style="cursor:pointer;">
+                    <span class="thin" style="font-size:0.85rem;">Steam</span>
+                </a>
+            </div>
+        </div>
+	</template>
+</dom-module>
+
+<script>
+    (function(window) {
+        var constructor = Polymer({
+
+        	is: 'side-nav-contents',
+
+            /**
+             * ...
+             *
+             * @attribute properties
+             * @type object
+             * @default
+             */
+            properties: {
+                firebase: {
+                    requests: null,
+                    games: null,
+                    users: null
+                },
+                name: 'Side Nav Contents'
+            },
+
+            /* Functions */
+            authDataCallback: function (authData) {
+                var cusElem = this;
+
+                if (authData) {
+                    //console.log("User " + authData.uid + " is logged in with " + authData.provider);
+                } else {
+                    //Check to make sure the user is logged out
+                    cusElem.loggedIn = false;
+                    cusElem.loggedOut = true;
+
+                    //Hide links
+                    cusElem.hideNavLinks();
+
+                    cusElem.notifyPath('loggedIn', cusElem.loggedIn);
+                    cusElem.notifyPath('loggedOut', cusElem.loggedOut);
+                    console.log("User is logged out");
+                }
+            },
+
+            getCurrentRoute: function(){
+                var activeRoute = document.querySelector('app-route[active]');
+                
+                switch (activeRoute.getAttribute('path')) {
+                    case '/':
+                        $("a[data-path='requests']").find('.arrow-left').show();
+                        break;
+
+                    case '/requests':
+                        $("a[data-path='requests']").find('.arrow-left').show();
+                        break;
+
+                    case '/userrequests':
+                        $("a[data-path='userrequests']").find('.arrow-left').show();
+                        break;
+
+                    case '/recent':
+                        $("a[data-path='recent']").find('.arrow-left').show();
+                        break;
+
+                    case '/games':
+                        var arrow = $("a[data-path='games']").find('.arrow-left');
+                        arrow.show();
+                        break;
+
+                    case '/about':
+                        $("a[data-path='about']").find('.arrow-left').show();
+                        break;
+
+                    case '/settings':
+                        $("a[data-path='settings']").find('.arrow-left').show();
+                        break;
+
+                    default:
+                        break;
+                }
+            },
+
+            hideNavLinks: function(){
+                $('.login-required').remove();
+            },
+
+            isLoggedIn: function () {
+                var cusElem = this;
+
+                if (window.lfg.utils.isLoggedIn()) {
+                    var userRef = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + authData.uid);
+
+                    //Get the user profile info. If none exists, redirect to Onboarding process...
+                    userRef
+                        .once('value', function (snapshot) {
+                            var user = snapshot.val();
+                            //redirect to user setup page
+                            if (user === null || user === undefined || user.setupcomplete === null || user.setupcomplete === undefined || user.setupcomplete === '' || user.setupcomplete === false) {
+                                cusElem.loggedIn = false;
+                                cusElem.hideNavLinks();
+                            }
+                            else {
+                                cusElem.loggedIn = true;
+                                cusElem.showNavLinks();
+                            }
+                        });
+                }
+            },
+
+
+            logOut: function () {
+                window.lfg.utils.logOut();
+                //check the current url. If they are in any of these pages, redirect them
+            },
+
+            /* Init */
+            initializeData: function () {
+                this.loggedIn = null;
+
+                this.isLoggedIn();
+            	this.firebaseUrl = window.lfg.config.getFirebaseUrl();
+            	this.firebaseRef = new Firebase(window.lfg.config.getFirebaseUrl());
+            },
+
+            registerEvents: function () {
+                // Register the callback to be fired every time auth state changes
+                var ref = new Firebase(window.lfg.config.getFirebaseUrl());
+                ref.onAuth(this.authDataCallback.bind(this));
+            },
+
+            registerPlugins: function() {
+            },
+
+            showNavLinks: function(){
+                $(this.$.nav_links).show();
+            },
+
+			/* Events */
+            ready: function () {
+            	this.initializeData();
+            },
+
+            attached: function () {
+            	this.registerPlugins();
+            	this.registerEvents();
+            	this.getCurrentRoute();
+            }
+        });
+    })(window);
+</script>
