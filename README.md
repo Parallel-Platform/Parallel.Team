@@ -5,6 +5,8 @@
 ## Requirements
 
 * [NodeJS](https://nodejs.org/)
+* [Firebase Account] (https://www.firebase.com/)
+* [Giantbomb API Account Key] (http://www.giantbomb.com/api/)
 
 ## Installation
 
