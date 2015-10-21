@@ -28,7 +28,7 @@ Copy `config-example.js` to `config.js` and make the appropriate changes.
 cp config-example.js config.js
 ```
 
-Copy `app-config-example.js` to `app-config.js` and make the appropriate changes.
+Copy `public/assets/app/js/app-config-example.js` to `public/assets/app/js/app-config.js` and make the appropriate changes.
 
 ```shell
 cp public/assets/app/js/app-config-example.js public/assets/app/js/app-config.js
