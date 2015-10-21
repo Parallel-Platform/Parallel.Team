@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <title>Parallel - Find people to play games with</title>
+    <title>Parallel - Find gamers to play games with</title>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-	<!--Open Graph Meta Tags-->
+    <!--Google SEO Ajax Crawling-->
+    <meta name="fragment" content="!">
+
+    <!--Open Graph Meta Tags-->
     <meta name="google-site-verification" content="2uuZoAcdpvKIUfyfXaly4OLA_18m4q23hAc9tX8LFpA" />
     <meta property="og:type" content="website" />
-	<meta property="og:title"content="Parallel - Connecting Gamers with Gamers" />
+    <meta property="og:title" content="Parallel - Connecting Gamers with Gamers" />
     <meta property="og:image" content="http://www.parallel.team/assets/app/img/fb_share_image.png" />
-	<meta property="og:site_name" content="Parallel" />
-	<meta property="og:description" content="Parellel is free web app that helps you find other gamers online to play your favorite games with. Create gaming requests for your favorite games, search for other players, respond to gaming requests by other gamers, & track your favorite games" />
-	<meta property="fb:app_id" content="857142311041951" />
+    <meta property="og:site_name" content="Parallel" />
+    <meta property="og:description" content="Parellel is free web app that helps you find other gamers online to play your favorite games with. Create gaming requests for your favorite games, search for other players, respond to gaming requests by other gamers, & track your favorite games" />
+    <meta property="fb:app_id" content="857142311041951" />
     <link rel="image_src" href="assets/app/img/fb_share_image.png" />
+
+    <!--Google search meta tags-->
+    <meta name="description" content="An LFG site that helps gamers find others to play video games with on Playstation 4, Xbox One, Wii U, Steam & PC. Find, Connect & Play with other gamers on titles such as Overwatch, Star Wars Battlefront, Halo 5, Battleborn, Call of Duty and more" />
 
     <!-- Web Components Polyfils -->
     <script src="components/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
@@ -21,11 +27,11 @@
     <link rel='import' href='components/bower_components/font-roboto/roboto.html'>
 
     <!-- Polymer & Polymer Core Components -->
-	<link rel='import' href='components/bower_components/polymer/polymer.html'>
+    <link rel='import' href='components/bower_components/polymer/polymer.html'>
 
     <!-- Scripts & Other dependencies -->
     <script src="components/bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="assets/app/js/jquery-ui.min.js"></script>
+    <script src="assets/app/js/jquery-ui.min.js"></script>
     <script src='components/bower_components/firebase/firebase.js'></script>
     <script src='assets/app/js/fireproof.min.js'></script>
     <script src="components/bower_components/moment/moment.js"></script>
@@ -36,16 +42,15 @@
     <script type="text/javascript" src="http://www.parallel.team/faye/client.js"></script>
     <!--<script type="text/javascript" src="http://parallel-test.azurewebsites.net/faye/client.js"></script>-->
     <!--<script type="text/javascript" src="http://localhost:1337/faye/client.js"></script>-->
+    <!-- Html sanitization-->
+    <script src="components/bower_components/xss/dist/xss.min.js"></script>
 
-	<!-- Html sanitization-->
-	<script src="components/bower_components/xss/dist/xss.min.js"></script>
-
-	<script src="assets/app/js/app-config.js"></script>
+    <script src="assets/app/js/app-config.js"></script>
     <script src="assets/app/js/app.js"></script>
-	<script src="assets/app/js/jquery.plugin.min.js"></script>
-	<script src="assets/app/js/jquery.timeentry.js"></script>
+    <script src="assets/app/js/jquery.plugin.min.js"></script>
+    <script src="assets/app/js/jquery.timeentry.js"></script>
     <script src="assets/app/js/underscore-min.js"></script>
-	<script src="assets/app/js/timeago.js"></script>
+    <script src="assets/app/js/timeago.js"></script>
     <script src="assets/app/js/date.js"></script>
     <script src="assets/app/js/caret.min.js"></script>
 
@@ -86,27 +91,27 @@
     <link rel="import" href="../imports/material_icons.html" />
     <link rel="import" href="../imports/font-awesome.html" />
     <link rel="import" href="components/bower_components/app-router/app-router.html">
-	
+
 </head>
 <body unresolved>
-<app-router mode="hash">
-	<app-route path="/" import="/views/request-page.html" element="request-page"></app-route>
-    <app-route path="/requests" import="/views/request-page.html" element="request-page"></app-route>
-	<app-route path="/login" import="/views/sign-in.html" element="sign-in"></app-route>
-    <app-route path="/new" import="/views/new-request.html" element="new-request"></app-route>
-    <app-route path="/games" import="/views/games-page.html" element="games-page"></app-route>
-	<app-route path="/userrequests" import="/views/user-requests.html" element="user-requests"></app-route>
-    <app-route path="/recent" import="/views/recent-requests.html" element="recent-requests"></app-route>
-	<app-route path="/setup" import="/views/user-setup.html" element="user-setup"></app-route>
-    <app-route path="/settings" import="/views/settings-page.html" element="settings-page"></app-route>
-	<app-route path="/request/:requestkey" import="/views/request-details.html" element="request-details"></app-route>
-    <app-route path="/landing" import="/views/landing-page.html" element="landing-page"></app-route>
-    <app-route path="*" import="/views/not-found-page.html"></app-route>
-</app-router>
+    <app-router mode="hashbang">
+        <app-route path="/" import="/views/request-page.html" element="request-page"></app-route>
+        <app-route path="/requests" import="/views/request-page.html" element="request-page"></app-route>
+        <app-route path="/login" import="/views/sign-in.html" element="sign-in"></app-route>
+        <app-route path="/new" import="/views/new-request.html" element="new-request"></app-route>
+        <app-route path="/games" import="/views/games-page.html" element="games-page"></app-route>
+        <app-route path="/userrequests" import="/views/user-requests.html" element="user-requests"></app-route>
+        <app-route path="/recent" import="/views/recent-requests.html" element="recent-requests"></app-route>
+        <app-route path="/setup" import="/views/user-setup.html" element="user-setup"></app-route>
+        <app-route path="/settings" import="/views/settings-page.html" element="settings-page"></app-route>
+        <app-route path="/request/:requestkey" import="/views/request-details.html" element="request-details"></app-route>
+        <app-route path="/landing" import="/views/landing-page.html" element="landing-page"></app-route>
+        <app-route path="*" import="/views/not-found-page.html"></app-route>
+    </app-router>
 
-<script src="assets/app/js/page-director.js"></script>
+    <!--<script src="assets/app/js/page-director.js"></script>-->
 
-<script>
+    <script>
 	window.fbAsyncInit = function() {
 		FB.init({
 			appId: '857142311041951',
@@ -123,9 +128,9 @@
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
 
-</script>
+    </script>
 
-<script>
+    <script>
  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -134,14 +139,14 @@
  ga('create', 'UA-66975307-1', 'auto');
  ga('send', 'pageview');
 
-</script>
+    </script>
 
-<script>
+    <script>
 
     //var DEFAULT_ROUTE = 'home';
     document.addEventListener('WebComponentsReady', function() {
     	//document.querySelector('app-router').init();
     });
-</script>
+    </script>
 </body>
 </html>
