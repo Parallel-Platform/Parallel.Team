@@ -26,6 +26,7 @@ public/components/bower_components
 
 #Private files
 config.js
+public/assets/app/js/app-config.js
 
 # Node modules
 node_modules
