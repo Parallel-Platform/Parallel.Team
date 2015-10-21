@@ -31,7 +31,7 @@ cp config-example.js config.js
 Copy `app-config-example.js` to `app-config.js` and make the appropriate changes.
 
 ```shell
-cp public/assets/app/js/config-example.js public/assets/app/js/config.js
+cp public/assets/app/js/app-config-example.js public/assets/app/js/app-config.js
 ```
 
 ## Running
