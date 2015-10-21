@@ -27,6 +27,8 @@ public/components/bower_components
 #Private files
 config.js
 
+# Node modules
+node_modules
 
 # Windows shortcuts
 *.lnk

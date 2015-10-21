@@ -18,6 +18,12 @@
     "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0",
     "html5-history-anchor": "~0.4.0",
     "moment-timezone": "~0.4.0",
-    "font-awesome" : " "
+    "font-awesome": " ",
+    "firebase": "~2.3.1",
+    "jquery": "~2.1.4",
+    "xss": "~0.2.7",
+    "app-router": "~2.6.1",
+    "Materialize": "materialize#~0.97.1",
+    "firebase-element": "PolymerElements/firebase-element#~1.0.6"
   }
 }
