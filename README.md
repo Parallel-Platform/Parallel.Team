@@ -24,7 +24,7 @@ bower install
 cd -
 ```
 
-Copy `config-example.js` to `config.js` and make the appropriate changes.
+Copy `config-example.js` to `config.js` and make the appropriate changes to the GiantBomb API key, Firebase url/secret and anything else you intend to use.
 
 ```shell
 cp config-example.js config.js
@@ -38,8 +38,10 @@ cp public/assets/app/js/app-config-example.js public/assets/app/js/app-config.js
 
 ## Running
 
-The application is built to run on an [Azure](https://azure.microsoft.com/en-us/) stack while storing the data in [Firebase](https://www.firebase.com/). However, you can run a local instance of it with the `local.js` script. This will start a local server which listens on [localhost:3000](http://localhost:3000).
+The application is built to run on an [Azure](https://azure.microsoft.com/en-us/) stack. However, you can run a local instance of it with the `bin/www` script. This will start a local server which listens on [localhost:3000](http://localhost:3000).
 
 ```shell
-node local.js
+node bin/www
 ```
+
+All authentication is done via Firebase, so you will need to set it up to authenticate with Google/Facebook/Twitter or any other auth service you want to use.
