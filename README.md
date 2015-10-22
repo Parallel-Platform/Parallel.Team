@@ -38,8 +38,8 @@ cp public/assets/app/js/app-config-example.js public/assets/app/js/app-config.js
 
 ## Running
 
-The application is built to run on an [Azure](https://azure.microsoft.com/en-us/) stack while storing the data in [Firebase](https://www.firebase.com/). However, you can run a local instance of it with the `local.js` script. This will start a local server which listens on [localhost:3000](http://localhost:3000).
+The application is built to run on an [Azure](https://azure.microsoft.com/en-us/) stack while storing the data in [Firebase](https://www.firebase.com/). However, you can run a local instance of it with the `bin/www` script. This will start a local server which listens on [localhost:3000](http://localhost:3000).
 
 ```shell
-node local.js
+node bin/www
 ```
