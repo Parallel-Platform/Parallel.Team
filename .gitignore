@@ -15,7 +15,6 @@ $RECYCLE.BIN/
 *.msp
 
 # VS Solution files & folders
-bin
 vendor
 *.dat
 *.njsproj

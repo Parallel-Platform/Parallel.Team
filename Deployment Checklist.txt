@@ -1,6 +1,7 @@
 (1) Set config.js 'env' property to 'prod'
 (2) Set app-config.js 'env' variable to 'prod'
 (3) Change the faye client js url in index.js to prod url
+(4) Copy bin folder to serevr web root
 (4) Copy node_modules folder to server web root (or any new node_modules added)
 (5) Copy config.js to server webroot
 (6) Copy bower_components folder to server webroot (or any new bower components added)
