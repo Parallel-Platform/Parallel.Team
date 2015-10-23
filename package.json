@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "./node_modules/mocha/bin/mocha --recursive test"
   },
   "description": "lfg",
   "author": {
@@ -28,6 +29,10 @@
     "stylus": "0.42.3",
     "underscore": "^1.8.3",
     "uuid": "^2.0.1",
-    "websocket-driver" : "^0.6.2"
+    "websocket-driver": "^0.6.2"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3",
+    "mockery": "^1.4.0"
   }
 }
