@@ -33,6 +33,7 @@ describe('giantbomb', function() {
 	});
 
 	after(function() {
+		mockery.deregisterAll();
 		mockery.disable();
 	});
 
