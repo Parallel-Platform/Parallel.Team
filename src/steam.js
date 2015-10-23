@@ -2,7 +2,7 @@
  * Created by Namdascious.
  */
 var requestPromise = require('request-promise');
-var config = require('./config');
+var config = require('../config');
 
 module.exports = {
 	getSteamUser : function (userId) {

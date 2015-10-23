@@ -17,10 +17,10 @@ describe('giantbomb', function() {
 
 		mockery.enable();
 		mockery.registerMock('request-promise', requestPromiseMock);
-		mockery.registerMock('./config', configMock);
-		mockery.registerAllowable('../giantbomb');
+		mockery.registerMock('../config', configMock);
+		mockery.registerAllowable('../src/giantbomb');
 
-		giantbomb = require('../giantbomb');
+		giantbomb = require('../src/giantbomb');
 	});
 
 	after(function() {

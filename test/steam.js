@@ -18,10 +18,10 @@ describe('steam', function() {
 
 		mockery.enable();
 		mockery.registerMock('request-promise', requestPromiseMock);
-		mockery.registerMock('./config', configMock);
-		mockery.registerAllowable('../steam');
+		mockery.registerMock('../config', configMock);
+		mockery.registerAllowable('../src/steam');
 
-		steam = require('../steam');
+		steam = require('../src/steam');
 	});
 
 	after(function() {

@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env node
 var faye = require('faye');
 var debug = require('debug')('Parallel.Team');
-var app = require('../app');
+var app = require('../src/app');
 var http = require('http');
 //var fs = require('fs');
 

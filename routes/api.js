@@ -13,8 +13,8 @@ var _ = require('underscore');
 
 var Firebase = require('firebase');
 var FirebaseTokenGenerator = require("firebase-token-generator");
-var giantbomb = require('../giantbomb');
-var steam = require('../steam');
+var giantbomb = require('../src/giantbomb');
+var steam = require('../src/steam');
 var config = require('../config');
 
 //Express stuff (routing, server info, etc)

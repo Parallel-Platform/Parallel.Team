@@ -3,7 +3,7 @@
  * Modified by Michael on 2015-10-22
  */
 var requestPromise = require('request-promise');
-var config = require('./config');
+var config = require('../config');
 
 module.exports = {
 	getGames: function(query, max){
