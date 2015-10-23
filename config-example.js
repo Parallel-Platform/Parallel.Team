@@ -23,7 +23,7 @@ module.exports = {
         "appsecret" : "<Your Facebook App Secret>"
     },
     "steam" : {
-        "api_url" : 'http://api.steampowered.com/<interface_name>/<method_name>/<version>/?key=<api_key>&format=<format>',
+        "api_url" : 'http://api.steampowered.com/',
         "api_key" : '<Your Steam API Key>',
         "provider" : 'http://steamcommunity.com/openid'
     },
