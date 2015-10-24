@@ -1,21 +1,68 @@
-var verify = require('../src/verify');
+var assert = require('assert');
+var mockery = require('mockery');
+var Firebase = require('firebase');
+var config = require('../config');
 
 describe('verify', function () {
-	this.timeout(5000);
+	var exampleUser = {
+		email: 'test@example.com',
+		verifytoken: '1234-abcd-4321',
+	};
+	var testUserRef = new Firebase(config.firebase.url + 'users/test:test');
+	var verify;
 
-	describe('verify', function () {
+	this.timeout(10000);
+
+	before(function(done) {
+		var uuidMock = {
+			v1: function () {
+				return exampleUser.verifytoken
+			}
+		};
+		var emailMock = {
+			send: function (toEmail, subject, template, params, callback) {
+				assert.equal(toEmail, exampleUser.email);
+				assert.equal(subject, 'Verify your Parallel Account Email');
+				assert.equal(template, 'verifyEmail.html');
+
+				callback(null, {
+					info: 'Complete'
+				});
+			}
+		};
+
+		mockery.enable({
+			useCleanCache: true,
+			warnOnUnregistered: false
+		});
+		mockery.registerMock('uuid', uuidMock);
+		mockery.registerMock('./email', emailMock);
+
+		verify = require('../src/verify');
+
+		testUserRef.set(exampleUser, done);
+	});
+
+	after(function() {
+		mockery.deregisterAll();
+		mockery.disable();
+		testUserRef.remove();
+	});
+
+	describe('verifyUserEmail', function () {
 		it('should attempt to verify the user', function (done) {
-			// WARNING: this ID may not work when you're testing because my user
-			// doesn't exist - this is temporary and should be fixed before
-			// these changes are merged in
-			verify.verifyUserEmail('google:108142328462790393788', done);
+			verify.verifyUserEmail('test:test', done);
 		});
 	});
 
 	describe('confirmToken', function () {
 		it('should attempt to confirm the user token', function (done) {
-			// WARNING: same as above
-			verify.confirmToken('c3def790-7a50-11e5-8235-d5d5f68d35bf', done);
+			verify.confirmToken(exampleUser.verifytoken, function (err) {
+				testUserRef.child('emailverified').once('value', function (item) {
+					assert.equal(item.val(), true);
+					done(err);
+				});
+			});
 		});
 	});
 });

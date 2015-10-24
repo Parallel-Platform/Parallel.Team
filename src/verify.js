@@ -42,13 +42,10 @@ verify.confirmToken = function (token, callback) {
 
 			if (user && !user.emailverified) {
 				var userKey = _.map(user, function (obj, key) { return key; });
-
 				if (userKey && userKey.length > 0) {
 					var firebaseUrl = config.firebase.url + 'users/' + userKey[0] + '/emailverified';
 					var userItemRef = new Firebase(firebaseUrl);
-					userItemRef.set(true);
-
-					callback(); // A-OK
+					userItemRef.set(true, callback);
 				}
 			} else {
 				callback('Unable to confirm token');

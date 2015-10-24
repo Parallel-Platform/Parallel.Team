@@ -1,7 +1,7 @@
 var assert = require('assert');
 var mockery = require('mockery');
 
-describe.only('email', function() {
+describe('email', function() {
 	var exampleContent = {
 		email: 'test@example.com',
 		subject: 'This is a test',
