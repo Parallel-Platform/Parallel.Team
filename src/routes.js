@@ -7,7 +7,6 @@ var url = require('url');
 var path = require('path');
 var openid = require('openid');
 var nodemailer = require('nodemailer');
-var uuid = require('uuid');
 var fs = require('fs');
 var _ = require('underscore');
 
@@ -15,6 +14,7 @@ var Firebase = require('firebase');
 var FirebaseTokenGenerator = require("firebase-token-generator");
 var giantbomb = require('./giantbomb');
 var steam = require('./steam');
+var verify = require('./verify');
 var config = require('../config');
 
 //Express stuff (routing, server info, etc)
@@ -280,62 +280,14 @@ router.get('/email/sendInviteRequest', function (req, res) {
 
 router.get('/verify', function (req, res) {
     var uid = req.query.uid;
-    var userEmailRef = new Firebase(config.firebase.url +'users/' + uid + '/email');
 
-    userEmailRef.once('value', function (snapshot) {
-        var email = snapshot.val();
-
-        if (email) {
-            //create, save & send email token
-            var token = uuid.v1();
-
-            //Save confirm token for user
-            userVerifyTokenRef = new Firebase(config.firebase.url + 'users/' + uid + '/verifytoken');
-            userVerifyTokenRef.set(token, function (error) {
-                if (error) {
-                    //Send message to user/client - probably via faye
-                    console.log('Synchronization failed');
-                } else {
-                    //Send verification email and success message to user/client
-                    var templateDir = config.appsettings.env === 'dev' ? './emailTemplates/verifyEmail.html' : '../emailTemplates/verifyEmail.html';
-                    var htmlTemplate = fs.readFileSync(templateDir, "utf8");
-                    var verify_url = origin + '/api/confirm/' + token;
-
-                    htmlTemplate = htmlTemplate.replace('{{verify_url}}', verify_url);
-                    htmlTemplate = htmlTemplate.replace('{{unsubscribe_url}}', verify_url);
-
-                    // setup e-mail data with unicode symbols
-                    var mailOptions = {
-                        from: 'Parallel <' + config.email.gmail.user + '>', // sender address
-                        to: email, // list of receivers
-                        subject: 'Verify your Parallel Account Email', // Subject line
-                        html: htmlTemplate // html body
-                    };
-
-                    // send mail with defined transport object
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            return console.log(error);
-                        }
-                        console.log('Message sent: ' + info.response);
-
-                        //send a faye notification to the client...
-                        var faye_server = GLOBAL.faye_server;
-
-                        if (faye_server !== null && faye_server !== undefined) {
-                            //Send confirmation to client
-                            faye_server.getClient().publish('/verificationSent',
-			                {
-                                emailSent: true
-                            });
-                        }
-                    });
-                }
-            });
-        }
+    verify.verifyUserEmail(uid, function (error) {
+	    if (error) {
+		    res.status(500).send(error);
+	    } else {
+		    res.status(200).send('server reached');
+	    }
     });
-
-    res.status(200).send('server reached');
 });
 
 router.get('/confirm/:token', function (req, res) {
