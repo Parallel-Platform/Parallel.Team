@@ -6,7 +6,8 @@ describe('email', function() {
 		email: 'test@example.com',
 		subject: 'This is a test',
 		template: 'templateFile.html',
-		html: 'This is a {{test}}'
+		html: 'This is a {{test}}',
+		finalHtml: 'This is a {{test}}'
 	};
 	var email;
 
@@ -26,7 +27,7 @@ describe('email', function() {
 				'Parallel <' + configMock.email.gmail.user + '>'
 			);
 			assert.equal(options.subject, exampleContent.subject);
-			assert.equal(options.html, exampleContent.html);
+			assert.equal(options.html, exampleContent.finalHtml);
 
 			callback();
 		};
@@ -67,6 +68,18 @@ describe('email', function() {
 				exampleContent.subject,
 				exampleContent.template,
 				{},
+				done
+			);
+		});
+
+		it('should replace the template content with params', function (done) {
+			exampleContent.finalHtml = 'This is a better test';
+
+			email.send(
+				exampleContent.email,
+				exampleContent.subject,
+				exampleContent.template,
+				{ test: 'better test'},
 				done
 			);
 		});

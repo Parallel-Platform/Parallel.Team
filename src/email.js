@@ -26,6 +26,13 @@ email.send = function (toEmail, subject, template, replaceParams, callback) {
 	var templatePath = path.join(__dirname, '..', 'emailTemplates', template);
 	var htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
+	for (var key in replaceParams) {
+		htmlTemplate = htmlTemplate.replace(
+			'{{' + key + '}}',
+			replaceParams[key]
+		);
+	}
+
 	// setup e-mail data with unicode symbols
 	var mailOptions = {
 		from: 'Parallel <' + config.email.gmail.user + '>', // sender address
