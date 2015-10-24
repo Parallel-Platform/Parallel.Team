@@ -1,10 +1,8 @@
 var Firebase = require('firebase');
-var path = require('path');
-var nodemailer = require('nodemailer');
 var uuid = require('uuid');
-var config = require('../config');
-var fs = require('fs');
 var _ = require('underscore');
+var email = require('./email');
+var config = require('../config');
 
 var origin = '';
 
@@ -24,15 +22,6 @@ switch (config.appsettings.env) {
 	default:
 		break;
 }
-
-// create reusable transporter object using SMTP transport
-var transporter = nodemailer.createTransport({
-	service: 'Gmail',
-	auth: {
-		user: config.email.gmail.user,
-		pass: config.email.gmail.password
-	}
-});
 
 var verify = {};
 
@@ -76,7 +65,7 @@ verify.confirmToken = function (token, callback) {
 verify.verifyUserEmail = function (userId, callback) {
 	var token = uuid.v1();
 	var userEmailRef = new Firebase(config.firebase.url + 'users/' + userId + '/email');
-	var email;
+	var userEmail;
 
 	/**
 	 * Send the verification e-mail to the user (if no error was encounted).
@@ -90,23 +79,19 @@ verify.verifyUserEmail = function (userId, callback) {
 			return callback(error);
 		}
 
-		//Send verification email and success message to user/client
-		var htmlTemplate = fs.readFileSync(path.join(__dirname, '../emailTemplates/verifyEmail.html'), 'utf8');
 		var verify_url = origin + '/api/confirm/' + token;
-
-		htmlTemplate = htmlTemplate.replace('{{verify_url}}', verify_url);
-		htmlTemplate = htmlTemplate.replace('{{unsubscribe_url}}', verify_url);
-
-		// setup e-mail data with unicode symbols
-		var mailOptions = {
-			from: 'Parallel <' + config.email.gmail.user + '>', // sender address
-			to: email, // list of receivers
-			subject: 'Verify your Parallel Account Email', // Subject line
-			html: htmlTemplate // html body
+		var emailParams = {
+			verify_url: verify_url,
+			unsubscribe_url: verify_url
 		};
 
-		// send mail with defined transport object
-		transporter.sendMail(mailOptions, notifyUser);
+		email.send(
+			userEmail,
+			'Verify your Parallel Account Email',
+			'verifyEmail.html',
+			emailParams,
+			notifyUser
+		);
 	}
 
 	/**
@@ -136,9 +121,9 @@ verify.verifyUserEmail = function (userId, callback) {
 	}
 
 	userEmailRef.once('value', function (snapshot) {
-		email = snapshot.val();
+		userEmail = snapshot.val();
 
-		if (email) {
+		if (userEmail) {
 			userVerifyTokenRef = new Firebase(config.firebase.url + 'users/' + userId + '/verifytoken');
 			userVerifyTokenRef.set(token, sendVerificationEmail);
 		} else {
