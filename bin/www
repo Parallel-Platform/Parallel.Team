@@ -1,29 +1,24 @@
 ﻿#!/usr/bin/env node
+
 var faye = require('faye');
 var debug = require('debug')('Parallel.Team');
-var app = require('../src/app');
 var http = require('http');
-//var fs = require('fs');
 
-var port = process.env.PORT || 3000;
+if (!process.env.PORT) {
+	process.env.PORT = 3000; // ensure the port is set before app is loaded
+}
 
-
-app.set('port', process.env.PORT || 3000);
-
-//var privateKey = fs.readFileSync('key.pem').toString();
-//var certificate = fs.readFileSync('certificate.pem').toString();
-//var credentials = {key: privateKey, cert: certificate};
+var app = require('../src/app');
+app.set('port', process.env.PORT);
 
 var faye_server = new faye.NodeAdapter({ mount: '/faye', timeout: 45 });
 console.log('Firing up faye server. . . ');
 
-//var server = http.createServer(credentials, app);
 var server = http.createServer(app);
 faye_server.attach(server);
 
-server.listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+server.listen(app.get('port'), function() {
+	console.log('Express server listening on port ' + app.get('port'));
 });
 
 GLOBAL.faye_server = faye_server;
-
