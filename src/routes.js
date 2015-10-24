@@ -13,8 +13,8 @@ var _ = require('underscore');
 
 var Firebase = require('firebase');
 var FirebaseTokenGenerator = require("firebase-token-generator");
-var giantbomb = require('../src/giantbomb');
-var steam = require('../src/steam');
+var giantbomb = require('./giantbomb');
+var steam = require('./steam');
 var config = require('../config');
 
 //Express stuff (routing, server info, etc)
@@ -70,7 +70,7 @@ router.get('/email/sendCommentEmail', function (req, res) {
     var creator = req.query.creator;
     var gametitle = req.query.gametitle;
     var system = req.query.system;
-    
+
     var titlemessage = 'Someone commented on your request';
     var grammarfocus = 'your';
     var interestfocus = 'you are interested in'
@@ -80,10 +80,10 @@ router.get('/email/sendCommentEmail', function (req, res) {
     var templateDir = config.appsettings.env === 'dev' ? './emailTemplates/commentRequestEmail.html' : '../emailTemplates/commentRequestEmail.html';
     var originalHtmlTemplate = fs.readFileSync(templateDir, "utf8");
     var requesturl = origin + '/#/request/' + requestid;
-    
+
     //Gonna need to do some querying - Get the creator, then for each subscriber, get their user info, and send an email to them if they are subscribed
     var creatorRef = new Firebase(config.firebase.url + 'users');
-    
+
     creatorRef
     .orderByChild('username')
     .equalTo(creator)
@@ -95,10 +95,10 @@ router.get('/email/sendCommentEmail', function (req, res) {
             var creatorEmail = null;
             var creatorUser = null;
 
-            var creatorUserArray = _.map(creatorUserObj, function (userItem, userKey) { 
+            var creatorUserArray = _.map(creatorUserObj, function (userItem, userKey) {
                 return userItem;
             });
-            
+
             if (creatorUserArray !== null && creatorUserArray !== undefined && creatorUserArray.length > 0) {
                 creatorUser = creatorUserArray[0];
                 creatorEmail = creatorUserArray[0].email;
@@ -106,12 +106,12 @@ router.get('/email/sendCommentEmail', function (req, res) {
 
             //Send an email to the creator if (a) their email is verified & (b) they are not the commenter
             if (
-                creatorEmail !== null && 
-                creatorEmail !== undefined && 
+                creatorEmail !== null &&
+                creatorEmail !== undefined &&
                 creatorUser !== null &&
                 creatorUser !== undefined &&
-                creatorUser.emailverified !== null && 
-                creatorUser.emailverified !== undefined && 
+                creatorUser.emailverified !== null &&
+                creatorUser.emailverified !== undefined &&
                 creatorUser.emailverified == true &&
                 creator.trim() !== commenter.trim()) {
 
@@ -125,7 +125,7 @@ router.get('/email/sendCommentEmail', function (req, res) {
                 htmlTemplate = htmlTemplate.replace('{{gametitle}}', gametitle);
                 htmlTemplate = htmlTemplate.replace('{{system}}', system);
                 htmlTemplate = htmlTemplate.replace('{{requesturl}}', requesturl);
-                
+
                 // setup e-mail data with unicode symbols
                 var mailOptions = {
                     from: 'Parallel <' + config.email.gmail.user + '>', // sender address
@@ -133,7 +133,7 @@ router.get('/email/sendCommentEmail', function (req, res) {
                     subject: subject, // Subject line
                     html: htmlTemplate // html body
                 };
-                
+
                 // send mail with defined transport object
                 transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
@@ -163,17 +163,17 @@ router.get('/email/sendCommentEmail', function (req, res) {
                                 var user = userSnapshot.val();
 
                                 if (
-                                    user !== null && 
+                                    user !== null &&
                                     user !== undefined &&
-                                     user.username !== null && 
-                                     user.username !== undefined && 
-                                     user.email !== null && 
-                                     user.email !== undefined && 
+                                     user.username !== null &&
+                                     user.username !== undefined &&
+                                     user.email !== null &&
+                                     user.email !== undefined &&
                                      user.emailverified !== null &&
                                      user.emailverified !== undefined &&
                                      user.emailverified == true &&
                                      user.username.trim() !== commenter.trim()) {
-                                    
+
                                     //send the user an email
                                     var htmlTemplate = originalHtmlTemplate.slice(0); //get a copy of the template
                                     htmlTemplate = htmlTemplate.replace('{{addressee}}', user.username);
@@ -184,7 +184,7 @@ router.get('/email/sendCommentEmail', function (req, res) {
                                     htmlTemplate = htmlTemplate.replace('{{gametitle}}', gametitle);
                                     htmlTemplate = htmlTemplate.replace('{{system}}', system);
                                     htmlTemplate = htmlTemplate.replace('{{requesturl}}', requesturl);
-                                    
+
                                     // setup e-mail data with unicode symbols
                                     var mailOptions = {
                                         from: 'Parallel <' + config.email.gmail.user + '>', // sender address
@@ -192,7 +192,7 @@ router.get('/email/sendCommentEmail', function (req, res) {
                                         subject: 'Someone commented on a gaming request you are interested in', // Subject line
                                         html: htmlTemplate // html body
                                     };
-                                    
+
                                     // send mail with defined transport object
                                     transporter.sendMail(mailOptions, function (error, info) {
                                         if (error) {
@@ -208,9 +208,9 @@ router.get('/email/sendCommentEmail', function (req, res) {
             });
         }
     });
-    
+
     res.status(200).send('server reached');
-    
+
 });
 
 router.get('/email/sendInviteRequest', function (req, res) {
@@ -218,43 +218,43 @@ router.get('/email/sendInviteRequest', function (req, res) {
     var invitee = req.query.invitee;
     var gametitle = req.query.gametitle;
     var system = req.query.system;
-    
+
     //Get the request
     var requestRef = new Firebase(config.firebase.url + 'requests/' + requestid);
-    
+
     requestRef.once('value', function (requestSnapshot) {
 
         var request = requestSnapshot.val();
-        
+
         if (request !== null && request !== undefined) {
-            
+
             //Get the request creator
             var creatorRef = new Firebase(config.firebase.url + 'users/' + request.uid);
             creatorRef.once('value', function (creatorSnapshot) {
 
                 var creator = creatorSnapshot.val();
-                
+
                 //Make sure their email is verified
                 if (
-                    creator !== null && 
-                    creator !== undefined && 
-                    creator.username !== null && 
-                    creator.username !== undefined && 
-                    creator.email !== null && 
-                    creator.email !== undefined && 
+                    creator !== null &&
+                    creator !== undefined &&
+                    creator.username !== null &&
+                    creator.username !== undefined &&
+                    creator.email !== null &&
+                    creator.email !== undefined &&
                     creator.emailverified === true) {
-                    
+
                     //Send email to the creator
                     var templateDir = config.appsettings.env === 'dev' ? './emailTemplates/inviteRequestEmail.html' : '../emailTemplates/inviteRequestEmail.html';
                     var htmlTemplate = fs.readFileSync(templateDir, "utf8");
                     var requesturl = origin + '/#/request/' + requestid;
-                    
+
                     htmlTemplate = htmlTemplate.replace('{{creator}}', creator.username);
                     htmlTemplate = htmlTemplate.replace('{{inviteRequestor}}', invitee);
                     htmlTemplate = htmlTemplate.replace('{{gametitle}}', gametitle);
                     htmlTemplate = htmlTemplate.replace('{{system}}', system);
                     htmlTemplate = htmlTemplate.replace('{{requesturl}}', requesturl);
-                    
+
                     // setup e-mail data with unicode symbols
                     var mailOptions = {
                         from: 'Parallel <' + config.email.gmail.user + '>', // sender address
@@ -262,7 +262,7 @@ router.get('/email/sendInviteRequest', function (req, res) {
                         subject: 'Response to your gaming request', // Subject line
                         html: htmlTemplate // html body
                     };
-                    
+
                     // send mail with defined transport object
                     transporter.sendMail(mailOptions, function (error, info) {
                         if (error) {
@@ -288,7 +288,7 @@ router.get('/verify', function (req, res) {
         if (email) {
             //create, save & send email token
             var token = uuid.v1();
-            
+
             //Save confirm token for user
             userVerifyTokenRef = new Firebase(config.firebase.url + 'users/' + uid + '/verifytoken');
             userVerifyTokenRef.set(token, function (error) {
@@ -300,10 +300,10 @@ router.get('/verify', function (req, res) {
                     var templateDir = config.appsettings.env === 'dev' ? './emailTemplates/verifyEmail.html' : '../emailTemplates/verifyEmail.html';
                     var htmlTemplate = fs.readFileSync(templateDir, "utf8");
                     var verify_url = origin + '/api/confirm/' + token;
-                    
+
                     htmlTemplate = htmlTemplate.replace('{{verify_url}}', verify_url);
                     htmlTemplate = htmlTemplate.replace('{{unsubscribe_url}}', verify_url);
-                    
+
                     // setup e-mail data with unicode symbols
                     var mailOptions = {
                         from: 'Parallel <' + config.email.gmail.user + '>', // sender address
@@ -311,7 +311,7 @@ router.get('/verify', function (req, res) {
                         subject: 'Verify your Parallel Account Email', // Subject line
                         html: htmlTemplate // html body
                     };
-                    
+
                     // send mail with defined transport object
                     transporter.sendMail(mailOptions, function (error, info) {
                         if (error) {
@@ -321,10 +321,10 @@ router.get('/verify', function (req, res) {
 
                         //send a faye notification to the client...
                         var faye_server = GLOBAL.faye_server;
-                        
+
                         if (faye_server !== null && faye_server !== undefined) {
                             //Send confirmation to client
-                            faye_server.getClient().publish('/verificationSent', 
+                            faye_server.getClient().publish('/verificationSent',
 			                {
                                 emailSent: true
                             });
@@ -341,7 +341,7 @@ router.get('/verify', function (req, res) {
 router.get('/confirm/:token', function (req, res) {
     var token = req.params.token;
     usersRef = new Firebase(config.firebase.url + 'users');
-    
+
     //hack - save the response object to use and send response later
     GLOBAL.confirmResponse = res;
 
@@ -359,7 +359,7 @@ router.get('/confirm/:token', function (req, res) {
                     var firebaseUrl = config.firebase.url + 'users/' + userKey[0] + '/emailverified';
                     var userItemRef = new Firebase(firebaseUrl);
                     userItemRef.set(true);
-                
+
                     //send verification success page
                     if (confirmResponse !== null && confirmResponse !== undefined) {
                         confirmResponse.sendFile(path.join(__dirname, '../public', 'confirm.html'));
@@ -376,7 +376,7 @@ router.get('/confirm/:token', function (req, res) {
 });
 
 router.get('/steam/authenticate', function (req, res) {
-	
+
 	var identifier = config.steam.provider;
 
 	relyingParty.authenticate(identifier, false, function (error, authUrl) {
@@ -397,17 +397,17 @@ router.get('/steam/authenticate', function (req, res) {
 router.get('/steam/authenticate/verify', function (req, res) {
     console.log('DING: Steam Authenticate Route Hit');
 	relyingParty.verifyAssertion(req, function (error, result) {
-		
+
 		var urlObj = url.parse(result.claimedIdentifier);
 		var pathArray = urlObj.pathname.split('/');
-		
+
 		if (pathArray !== null && pathArray !== undefined && pathArray.length > 0) {
             var steamid = pathArray[(pathArray.length - 1)];
-            
+
             //Get the user profile from steam
             steam.getSteamUser(steamid)
             .then(function (data) {
-                var steamData = JSON.parse(data);              
+                var steamData = JSON.parse(data);
                 if (
                     steamData !== null && steamData !== undefined && steamData.response !== null && steamData.response !== undefined && steamData.response.players !== null &&
                     steamData.response.players !== undefined && steamData.response.players.length > 0
@@ -417,12 +417,12 @@ router.get('/steam/authenticate/verify', function (req, res) {
                     //Generate a firebase token for our steam auth user info
                     var tokenGenerator = new FirebaseTokenGenerator(config.firebase.secret);
                     var token = tokenGenerator.createToken({ uid: "steam:" + steamid });
-                    
+
                     var faye_server = GLOBAL.faye_server;
-                    
+
                     if (faye_server !== null && faye_server !== undefined) {
                         //Send token to the client
-                        faye_server.getClient().publish('/steamSuccess', 
+                        faye_server.getClient().publish('/steamSuccess',
 			            {
                             pageName: 'sign-in.html',
                             steamid: steamid,

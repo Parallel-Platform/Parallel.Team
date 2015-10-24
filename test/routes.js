@@ -7,7 +7,7 @@ describe('/api', function() {
 
 	before(function() {
 		var app = express();
-		var apiRoutes = require('../routes/api');
+		var apiRoutes = require('../src/routes');
 
 		app.use('/api', apiRoutes);
 		server = app.listen(3999);

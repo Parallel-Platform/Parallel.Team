@@ -22,7 +22,7 @@ switch (config.appsettings.env) {
 }
 
 process.env.HOST = domain;
-var routes = require('../routes/api');
+var routes = require('./routes');
 
 var app = express();
 
