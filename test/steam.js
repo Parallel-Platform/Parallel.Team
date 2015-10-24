@@ -16,7 +16,9 @@ describe('steam', function() {
 				return url;
 			};
 
-		mockery.enable();
+		mockery.enable({
+			useCleanCache: true
+		});
 		mockery.registerMock('request-promise', requestPromiseMock);
 		mockery.registerMock('../config', configMock);
 		mockery.registerAllowable('../src/steam');
