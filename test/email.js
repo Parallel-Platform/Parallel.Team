@@ -13,6 +13,9 @@ describe('email', function() {
 
 	before(function() {
 		var configMock = {
+			appsettings: {
+				env: 'dev'
+			},
 			email: {
 				gmail: {
 					user: 'sender@example.com',
@@ -45,13 +48,12 @@ describe('email', function() {
 		};
 
 		mockery.enable({
-			useCleanCache: true
+			useCleanCache: true,
+			warnOnUnregistered: false
 		});
 		mockery.registerMock('nodemailer', nodemailerMock);
 		mockery.registerMock('../config', configMock);
 		mockery.registerMock('fs', fsMock);
-		mockery.registerAllowable('path');
-		mockery.registerAllowable('../src/email');
 
 		email = require('../src/email');
 	});

@@ -189,62 +189,18 @@ router.get('/email/sendCommentEmail', function (req, res) {
 });
 
 router.get('/email/sendInviteRequest', function (req, res) {
-    var requestid = req.query.requestid;
+    var requestId = req.query.requestid;
     var invitee = req.query.invitee;
-    var gametitle = req.query.gametitle;
+    var gameTitle = req.query.gametitle;
     var system = req.query.system;
 
-    //Get the request
-    var requestRef = new Firebase(config.firebase.url + 'requests/' + requestid);
-
-    requestRef.once('value', function (requestSnapshot) {
-
-        var request = requestSnapshot.val();
-
-        if (request !== null && request !== undefined) {
-
-            //Get the request creator
-            var creatorRef = new Firebase(config.firebase.url + 'users/' + request.uid);
-            creatorRef.once('value', function (creatorSnapshot) {
-
-                var creator = creatorSnapshot.val();
-
-                //Make sure their email is verified
-                if (
-                    creator !== null &&
-                    creator !== undefined &&
-                    creator.username !== null &&
-                    creator.username !== undefined &&
-                    creator.email !== null &&
-                    creator.email !== undefined &&
-                    creator.emailverified === true) {
-
-	                var requesturl = origin + '/#/request/' + requestid;
-	                var params = {
-		                creator: creator.username,
-		                inviteRequestor: invitee,
-		                gametitle: gametitle,
-		                system: system,
-		                requesturl: requesturl
-	                };
-
-	                email.send(
-	                	creator.email,
-	                	'Response to your gaming request',
-	                	'inviteRequestEmail.html',
-	                	params,
-	                	function (error, info) {
-	                        if (error) {
-	                            return console.log(error);
-	                        }
-	                        console.log('Message sent: ' + info.response);
-                    });
-                }
-            });
-        }
-    });
-
-    res.status(200).send('server reached');
+	email.sendInviteRequest(requestId, invitee, gameTitle, system, function (err) {
+		if (err) {
+			res.status(500).send(err);
+		} else {
+			res.status(200).send('server reached');
+		}
+	});
 });
 
 router.get('/verify', function (req, res) {
