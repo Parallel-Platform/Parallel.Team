@@ -12,7 +12,7 @@ describe('verify', function () {
 		});
 	});
 
-	describe.only('confirmToken', function () {
+	describe('confirmToken', function () {
 		it('should attempt to confirm the user token', function (done) {
 			// WARNING: same as above
 			verify.confirmToken('c3def790-7a50-11e5-8235-d5d5f68d35bf', done);
