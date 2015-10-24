@@ -4,36 +4,68 @@ var nodemailer = require('nodemailer');
 var uuid = require('uuid');
 var config = require('../config');
 var fs = require('fs');
+var _ = require('underscore');
 
 var origin = '';
 
 switch (config.appsettings.env) {
-    case 'dev':
-        origin = 'http://' + process.env.HOST + ':' + process.env.PORT;
-        break;
+	case 'dev':
+		origin = 'http://' + process.env.HOST + ':' + process.env.PORT;
+		break;
 
-    case 'test':
-        origin = config.appsettings.testDomain;
-        break;
+	case 'test':
+		origin = config.appsettings.testDomain;
+		break;
 
-    case 'prod':
-        origin = config.appsettings.prodDomain;
-        break;
+	case 'prod':
+		origin = config.appsettings.prodDomain;
+		break;
 
-    default:
-        break;
+	default:
+		break;
 }
 
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: config.email.gmail.user,
-        pass: config.email.gmail.password
-    }
+	service: 'Gmail',
+	auth: {
+		user: config.email.gmail.user,
+		pass: config.email.gmail.password
+	}
 });
 
 var verify = {};
+
+/**
+ * Confirm an email verification token.
+ *
+ * @param {String}	 token	  Token to confirm
+ * @param {Function} callback Function to call when the confirmation is complete
+ */
+verify.confirmToken = function (token, callback) {
+	var usersRef = new Firebase(config.firebase.url + 'users');
+
+	usersRef
+		.orderByChild('verifytoken')
+		.equalTo(token)
+		.once('value', function (snapshot) {
+			var user = snapshot.val();
+
+			if (user && !user.emailverified) {
+				var userKey = _.map(user, function (obj, key) { return key; });
+
+				if (userKey && userKey.length > 0) {
+					var firebaseUrl = config.firebase.url + 'users/' + userKey[0] + '/emailverified';
+					var userItemRef = new Firebase(firebaseUrl);
+					userItemRef.set(true);
+
+					callback(); // A-OK
+				}
+			} else {
+				callback('Unable to confirm token');
+			}
+		});
+};
 
 /**
  * Send verification email to the user.
@@ -113,6 +145,6 @@ verify.verifyUserEmail = function (userId, callback) {
 			callback('No email for user ' + userId);
 		}
 	});
-}
+};
 
 module.exports = verify;
