@@ -66,7 +66,7 @@ steam.getSteamUser = function (userId) {
 	var steamUrl = config.steam.api_url
 		+ 'ISteamUser/GetPlayerSummaries/v0002/?key='
 		+ config.steam.api_key
-		+ '&format=json&steamIds=' + userId;
+		+ '&format=json&steamids=' + userId;
 
 	return requestPromise(steamUrl);
 };

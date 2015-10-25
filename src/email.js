@@ -246,4 +246,27 @@ email.sendInviteRequest = function (requestId, invitee, gameTitle, system, callb
 	});
 };
 
+/**
+ * Send an e-mail for verifying the user's e-mail.
+ *
+ * @oaram {String}   userEmail E-mail of the user
+ * @param {String}   token     Verification token
+ * @param {Function} callback  Callback
+ */
+email.sendVerificationEmail = function (userEmail, token, callback) {
+	var verify_url = origin + '/api/confirm/' + token;
+	var emailParams = {
+		verify_url: verify_url,
+		unsubscribe_url: verify_url
+	};
+
+	email.send(
+		userEmail,
+		'Verify your Parallel Account Email',
+		'verifyEmail.html',
+		emailParams,
+		callback
+	);
+}
+
 module.exports = email;

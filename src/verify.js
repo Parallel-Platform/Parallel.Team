@@ -4,25 +4,6 @@ var _ = require('underscore');
 var email = require('./email');
 var config = require('../config');
 
-var origin = '';
-
-switch (config.appsettings.env) {
-	case 'dev':
-		origin = 'http://' + process.env.HOST + ':' + process.env.PORT;
-		break;
-
-	case 'test':
-		origin = config.appsettings.testDomain;
-		break;
-
-	case 'prod':
-		origin = config.appsettings.prodDomain;
-		break;
-
-	default:
-		break;
-}
-
 var verify = {};
 
 /**
@@ -62,67 +43,39 @@ verify.confirmToken = function (token, callback) {
 verify.verifyUserEmail = function (userId, callback) {
 	var token = uuid.v1();
 	var userEmailRef = new Firebase(config.firebase.url + 'users/' + userId + '/email');
-	var userEmail;
-
-	/**
-	 * Send the verification e-mail to the user (if no error was encounted).
-	 *
-	 * @param {Error} error
-	 */
-	function sendVerificationEmail(error) {
-		if (error) {
-			//Send message to user/client - probably via faye
-			console.log('Synchronization failed');
-			return callback(error);
-		}
-
-		var verify_url = origin + '/api/confirm/' + token;
-		var emailParams = {
-			verify_url: verify_url,
-			unsubscribe_url: verify_url
-		};
-
-		email.send(
-			userEmail,
-			'Verify your Parallel Account Email',
-			'verifyEmail.html',
-			emailParams,
-			notifyUser
-		);
-	}
-
-	/**
-	 * Notify the user of success/failure.
-	 *
-	 * @param {Error} error An error (if it occured)
-	 * @param {Object} info Response object
-	 */
-	function notifyUser(error, info) {
-		if (error) {
-			console.log(error);
-			return callback(error);
-		}
-		console.log('Message sent: ' + info.response);
-
-		//send a faye notification to the client...
-		var faye_server = GLOBAL.faye_server;
-
-		if (faye_server !== null && faye_server !== undefined) {
-			//Send confirmation to client
-			faye_server.getClient().publish('/verificationSent', {
-				emailSent: true
-			});
-		}
-
-		callback(); // we're done here
-	}
 
 	userEmailRef.once('value', function (snapshot) {
-		userEmail = snapshot.val();
+		var userEmail = snapshot.val();
 
 		if (userEmail) {
 			userVerifyTokenRef = new Firebase(config.firebase.url + 'users/' + userId + '/verifytoken');
-			userVerifyTokenRef.set(token, sendVerificationEmail);
+			userVerifyTokenRef.set(token, function (err) {
+				if (err) {
+					//Send message to user/client - probably via faye
+					console.log('Synchronization failed');
+					return callback(err);
+				}
+
+				email.sendVerificationEmail(userEmail, token, function (error, info) {
+					if (error) {
+						console.log(error);
+						return callback(error);
+					}
+					console.log('Message sent: ' + info.response);
+
+					//send a faye notification to the client...
+					var faye_server = GLOBAL.faye_server;
+
+					if (faye_server !== null && faye_server !== undefined) {
+						//Send confirmation to client
+						faye_server.getClient().publish('/verificationSent', {
+							emailSent: true
+						});
+					}
+
+					callback(); // we're done here
+				});
+			});
 		} else {
 			callback('No email for user ' + userId);
 		}

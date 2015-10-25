@@ -20,10 +20,9 @@ describe('verify', function () {
 			}
 		};
 		var emailMock = {
-			send: function (toEmail, subject, template, params, callback) {
+			sendVerificationEmail: function (toEmail, token, callback) {
 				assert.equal(toEmail, exampleUser.email);
-				assert.equal(subject, 'Verify your Parallel Account Email');
-				assert.equal(template, 'verifyEmail.html');
+				assert.equal(token, exampleUser.verifytoken);
 
 				callback(null, {
 					info: 'Complete'
