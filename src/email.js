@@ -2,6 +2,7 @@ var nodemailer = require('nodemailer');
 var path = require('path');
 var fs = require('fs');
 var Firebase = require('firebase');
+var _ = require('underscore');
 var config = require('../config');
 
 var origin = '';
@@ -69,6 +70,131 @@ email.send = function (toEmail, subject, template, replaceParams, callback) {
  * Send an invite request.
  *
  * @param {String}   requestId ID of the request
+ * @param {String}   commenter User who commented on the request
+ * @param {String}   creator   User who created the request
+ * @param {String}   gameTitle Title of the game in the request
+ * @param {String}   system    System in the request
+ * @param {Function} callback  Callback
+ * @todo Get creator and game title/system from request?
+ */
+email.sendCommentEmail = function (requestId, commenter, creator, gameTitle, system, callback) {
+	//Send email to the owner of the request
+	var requesturl = origin + '/#/request/' + requestId;
+
+	// Gonna need to do some querying - Get the creator, then for each
+	// subscriber, get their user info, and send an email to them if they are
+	// subscribed.
+	var creatorRef = new Firebase(config.firebase.url + 'users');
+
+	creatorRef
+		.orderByChild('username')
+		.equalTo(creator)
+		.once('value', function (creatorSnapshot) {
+			var creatorUserObj = creatorSnapshot.val();
+
+			if (creatorUserObj !== null && creatorUserObj !== undefined) {
+
+				var creatorEmail = null;
+				var creatorUser = null;
+
+				var creatorUserArray = _.map(creatorUserObj, function (userItem, userKey) {
+					return userItem;
+				});
+
+				if (creatorUserArray && creatorUserArray.length) {
+					creatorUser = creatorUserArray[0];
+					creatorEmail = creatorUserArray[0].email;
+				}
+
+				//Send an email to the creator if (a) their email is verified & (b) they are not the commenter
+				if (creatorEmail && creatorUser
+					&& creatorUser.emailverified
+					&& creatorUser.emailverified
+					&& creator.trim() !== commenter.trim()) {
+
+					//send email to creator
+					var params = {
+						addressee: creator,
+						titlemessage: 'Someone commented on your request',
+						grammarfocus: 'your',
+						interestfocus: '',	 //interest focus is empty for the creator
+						commenter: commenter,
+						gametitle: gameTitle,
+						system: system,
+						requesturl: requesturl
+					};
+
+					email.send(
+						creatorUser.email,
+						'Someone commented on your gaming request',
+						'commentRequestEmail.html',
+						params,
+						function (error, info) {
+							if (error) {
+								return console.log(error);
+							}
+							console.log('Message sent: ' + info.response);
+					});
+				}
+
+				//Now we are going to make a call for each subscribed user, and send them an email one after the other
+				var requestSubscribersRef = new Firebase(config.firebase.url + 'requests/' + requestId + '/subscribers');
+
+				requestSubscribersRef.once('value', function (subsSnapshot) {
+					var subscriberIds = subsSnapshot.val();
+
+					if (subscriberIds !== null && subscriberIds !== undefined) {
+						var subscriberIdsArray = _.map(subscriberIds, function (sub, key) {
+							return sub.uid;
+						});
+
+						if (subscriberIdsArray !== null && subscriberIdsArray !== undefined && subscriberIdsArray.length > 0) {
+							//Get the user for each uid and send them an email - all except the commenter
+							_.each(subscriberIdsArray, function (subId) {
+
+								var userRef = new Firebase(config.firebase.url + 'users/' + subId);
+								userRef.once('value', function (userSnapshot) {
+									var user = userSnapshot.val();
+
+									if (user && user.username && user.email && user.emailverified && user.username.trim() !== commenter.trim()) {
+										var params = {
+											addressee: user.username,
+											titlemessage: 'Someone commented on a request you are interested in',
+											grammarfocus: 'a',
+											interestfocus: 'you are interested in',
+											commenter: commenter,
+											gametitle: gameTitle,
+											system: system,
+											requesturl: requesturl
+										};
+
+										email.send(
+											user.email,
+											'Someone commented on a gaming request you are interested in',
+											'commentRequestEmail.html',
+											params,
+											function (error, info) {
+												if (error) {
+													return console.log(error);
+												}
+												console.log('Message sent: ' + info.response);
+										 });
+									}
+								});
+							});
+						}
+					}
+				});
+			}
+
+			callback();
+	});
+};
+
+/**
+ * Send an invite request.
+ *
+ * @param {String}   requestId ID of the request
  * @param {String}   invitee   Person who requested the invite
  * @param {String}   gameTitle Title of the game in the request
  * @param {String}   system    System in the request
@@ -95,7 +221,7 @@ email.sendInviteRequest = function (requestId, invitee, gameTitle, system, callb
 					var params = {
 						creator: creator.username,
 						inviteRequestor: invitee,
-						gametitle: gameTitle,
+						gameTitle: gameTitle,
 						system: system,
 						requesturl: requestUrl
 					};
