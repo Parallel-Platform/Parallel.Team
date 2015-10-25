@@ -6,10 +6,13 @@ describe('steam', function() {
 
 	before(function() {
 		var configMock = {
-				'steam' : {
-					'api_url' : 'http://api.steampowered.com/',
-					'api_key' : 'TEST1234',
-					'provider' : 'http://steamcommunity.com/openid'
+				appsettings: {
+					env: 'dev'
+				},
+				steam: {
+					api_url: 'http://api.steampowered.com/',
+					api_key: 'TEST1234',
+					provider: 'http://steamcommunity.com/openid'
 				}
 			}
 		    requestPromiseMock = function(url) {
@@ -17,11 +20,11 @@ describe('steam', function() {
 			};
 
 		mockery.enable({
-			useCleanCache: true
+			useCleanCache: true,
+			warnOnUnregistered: false
 		});
 		mockery.registerMock('request-promise', requestPromiseMock);
 		mockery.registerMock('../config', configMock);
-		mockery.registerAllowable('../src/steam');
 
 		steam = require('../src/steam');
 	});
