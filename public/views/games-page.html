@@ -530,6 +530,11 @@
                                             <i class="fa fa-arrow-right fa-lg"></i>&nbsp;
                                             View requests
                                         </a>
+                                        <br />
+                                        <a class="red-text text-darken-4" style="cursor:pointer; font-size:1.05rem;" on-click="removeGame">
+	                                        <i class="fa fa-remove fa-lg"></i>&nbsp;
+	                                        Remove
+                                        </a>
 									</div>
 								</div>
 							</div>
@@ -1197,6 +1202,7 @@
             		if (system === null || system === undefined || system === '' || system === 'none') {
             			var refFunc = userGamesRef.on('child_added', function (snapshot) {
             				var game = snapshot.val();
+            				game._key = snapshot.key();
             				cusElem.push('userGames', game);
             				$(cusElem.$.games_overlay).fadeOut();
             			});
@@ -1227,6 +1233,7 @@
 										.endAt(system + '~')
 										.on('child_added', function (snapshot) {
             								var game = snapshot.val();
+            								game._key = snapshot.key();
             								cusElem.push('userGames', game);
             								$(cusElem.$.games_overlay).fadeOut();
 										});
@@ -1277,6 +1284,34 @@
                 else {
                     cusElem.blockContent();
                 }
+            },
+
+            removeGame: function (e) {
+	            var cusElem = this;
+
+	            if (confirm('Are you sure you want to remove this game?')) {
+		            var game = e.model.item._key;
+
+	            	var authJSON = sessionStorage.getItem(window.lfg.config.firebaseCacheKey);
+	            	var authData = JSON.parse(authJSON);
+
+	            	if (!authData) {
+	            		var localJSON = localStorage.getItem(window.lfg.config.firebaseCacheKey);
+	            		authData = JSON.parse(localJSON);
+	            	}
+
+	            	if (authData) {
+	    	            var ref = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + authData.uid + '/games/' + game);
+			            ref.remove(function (err) {
+				            if (err) {
+					            console.error(err);
+					            return;
+			        	    }
+
+			        	    cusElem.getTaggedGames(cusElem.systemFilter);
+						});
+					}
+		        }
             },
 
             resolveGbBrokenImage: function (imgElem) {
