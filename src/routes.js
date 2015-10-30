@@ -114,7 +114,7 @@ router.get('/giantbomb/search', function (req, res) {
 	console.log('DING: Giantbomb Search Route Hit');
 	giantbomb.getGames(req.query.search, req.query.limit)
 		.then(function (data) {
-			res.staus(200).send(data);
+			res.status(200).send(data);
 		}, function (err) {
 			console.error("%s; %s", err.message);
 			res.status(500).send(err);
