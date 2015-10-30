@@ -419,6 +419,14 @@
 			background-color: #ffffff;
 		}
 
+		.game-buttons {
+			margin-top: 40px;
+		}
+
+		.game-buttons a {
+			display: block;
+		}
+
 		.requests-card-panel {
 			width: 100%;
 			box-shadow: 0 2px 5px 0 #e65100;
@@ -525,16 +533,16 @@
 									<div class="card-reveal">
 										<span class="card-title grey-text text-darken-4" style="font-size:1rem;">{{item.gametitle}}<i class="material-icons right">close</i></span><br />
 										<div><span class$="{{getSystemLabelClass(item.system)}}" data-system="[[item.system]]" style="margin-right:5px;">{{getSystemType(item.system)}}</span></div>
-                                        <br /><br />
-                                        <a href="{{getRequestListUrl(item)}}" class="orange-text text-darken-4" style="cursor:pointer; font-size:1.05rem;">
-                                            <i class="fa fa-arrow-right fa-lg"></i>&nbsp;
-                                            View requests
-                                        </a>
-                                        <br />
-                                        <a class="red-text text-darken-4" style="cursor:pointer; font-size:1.05rem;" on-click="removeGame">
-	                                        <i class="fa fa-remove fa-lg"></i>&nbsp;
-	                                        Remove
-                                        </a>
+                                        <div class="game-buttons">
+	                                        <a href="{{getRequestListUrl(item)}}" class="orange-text text-darken-4" style="cursor:pointer; font-size:1.05rem;">
+	                                            <i class="fa fa-arrow-right fa-lg"></i>&nbsp;
+	                                            View requests
+	                                        </a>
+	                                        <a class="red-text text-darken-4" style="cursor:pointer; font-size:1.05rem;" on-click="removeGame">
+		                                        <i class="fa fa-remove fa-lg"></i>&nbsp;
+		                                        Remove
+	                                        </a>
+                                        </div>
 									</div>
 								</div>
 							</div>
