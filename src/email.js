@@ -221,7 +221,7 @@ email.sendInviteRequest = function (requestId, invitee, gameTitle, system, callb
 					var params = {
 						creator: creator.username,
 						inviteRequestor: invitee,
-						gameTitle: gameTitle,
+						gametitle: gameTitle,
 						system: system,
 						requesturl: requestUrl
 					};
