@@ -1,10 +1,13 @@
-(1) Set config.js 'env' property to 'prod'
-(2) Set app-config.js 'env' variable to 'prod'
+(1) Set server config.js 'env' property to 'prod'
+(2) Set client app-config.js 'env' variable to 'prod'
 (3) Change the faye client js url in index.js to prod url
-(4) Copy bin folder to serevr web root
-(4) Copy node_modules folder to server web root (or any new node_modules added)
-(5) Copy config.js to server webroot
-(6) Copy bower_components folder to server webroot (or any new bower components added)
-(7) Commit git repo and push to Github
-(8) Verify Successful deployment on Azure Web Dashboard
-(9) Go to site and verify site is running
+(4) Change Firebase url on server (config.js) to prod url
+(5) Change Firebase url on client (app-config.js) to prod url
+(6) Copy bin folder to server web root (FTP or otherwise)
+(7) Copy node_modules folder to server web root (or any new node_modules added) (FTP or otherwise)
+(8) Copy config.js to server webroot (FTP or otherwise)
+(9) Copy app-config.js to server webroot (FTP or otherwise)
+(10) Copy bower_components folder to server webroot (or any new bower components added) (FTP or otherwise)
+(11) Commit git repo and push to Github
+(12) Verify successful deployment on Azure Web Dashboard
+(13) Go to site and verify site is running

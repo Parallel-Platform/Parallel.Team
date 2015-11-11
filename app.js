@@ -6,28 +6,28 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var config = require('../config');
+var config = require('./config');
 
 var domain = 'localhost';
 
 switch (config.appsettings.env) {
 
 	case 'test':
-		domain = 'https://parallel-test.herokuapp.com';
+		domain = config.appsettings.testDomain;
 		break;
 
 	case 'prod':
-		domain = '';
+        domain = config.appsettings.prodDomain;
 		break;
 }
 
 process.env.HOST = domain;
-var routes = require('./routes');
+var routes = require('./src/routes');
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, '..', 'public', 'views'));
+app.set('views', path.join(__dirname + '/public', 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public

@@ -8,7 +8,7 @@ if (!process.env.PORT) {
 	process.env.PORT = 3000; // ensure the port is set before app is loaded
 }
 
-var app = require('../src/app');
+var app = require('../app');
 app.set('port', process.env.PORT);
 
 var faye_server = new faye.NodeAdapter({ mount: '/faye', timeout: 45 });
