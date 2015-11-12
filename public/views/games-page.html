@@ -419,6 +419,14 @@
 			background-color: #ffffff;
 		}
 
+		.game-buttons {
+			margin-top: 40px;
+		}
+
+		.game-buttons a {
+			display: block;
+		}
+
 		.requests-card-panel {
 			width: 100%;
 			box-shadow: 0 2px 5px 0 #e65100;
@@ -525,11 +533,16 @@
 									<div class="card-reveal">
 										<span class="card-title grey-text text-darken-4" style="font-size:1rem;">{{item.gametitle}}<i class="material-icons right">close</i></span><br />
 										<div><span class$="{{getSystemLabelClass(item.system)}}" data-system="[[item.system]]" style="margin-right:5px;">{{getSystemType(item.system)}}</span></div>
-                                        <br /><br />
-                                        <a href="{{getRequestListUrl(item)}}" class="orange-text text-darken-4" style="cursor:pointer; font-size:1.05rem;">
-                                            <i class="fa fa-arrow-right fa-lg"></i>&nbsp;
-                                            View requests
-                                        </a>
+                                        <div class="game-buttons">
+	                                        <a href="{{getRequestListUrl(item)}}" class="orange-text text-darken-4" style="cursor:pointer; font-size:1.05rem;">
+	                                            <i class="fa fa-arrow-right fa-lg"></i>&nbsp;
+	                                            View requests
+	                                        </a>
+	                                        <a class="red-text text-darken-4" style="cursor:pointer; font-size:1.05rem;" on-click="removeGame">
+		                                        <i class="fa fa-remove fa-lg"></i>&nbsp;
+		                                        Remove
+	                                        </a>
+                                        </div>
 									</div>
 								</div>
 							</div>
@@ -1197,6 +1210,7 @@
             		if (system === null || system === undefined || system === '' || system === 'none') {
             			var refFunc = userGamesRef.on('child_added', function (snapshot) {
             				var game = snapshot.val();
+            				game._key = snapshot.key();
             				cusElem.push('userGames', game);
             				$(cusElem.$.games_overlay).fadeOut();
             			});
@@ -1227,6 +1241,7 @@
 										.endAt(system + '~')
 										.on('child_added', function (snapshot) {
             								var game = snapshot.val();
+            								game._key = snapshot.key();
             								cusElem.push('userGames', game);
             								$(cusElem.$.games_overlay).fadeOut();
 										});
@@ -1248,6 +1263,18 @@
             				functionRef: refFunc
             			});
             		}
+            		
+            		//Register child_removed callback - this will remove the game from the userGames array
+			userGamesRef.on('child_removed', function(oldChildSnapshot) {
+				// remove game from userGames array & update polymer element
+				var oldKey = oldChildSnapshot.key();
+				var deletedGame = _.findWhere(cusElem.userGames, { _key: oldKey });
+				
+				if(deletedGame){
+					cusElem.userGames = _.without(cusElem.userGames, deletedGame);
+					cusElem.notifyPath('userGames', cusElem.userGames);
+				}
+			});
             	}
             },
 
@@ -1277,6 +1304,33 @@
                 else {
                     cusElem.blockContent();
                 }
+            },
+
+            removeGame: function (e) {
+	            var cusElem = this;
+
+	            if (confirm('Are you sure you want to remove this game?')) {
+		            var game = e.model.item._key;
+
+	            	var authJSON = sessionStorage.getItem(window.lfg.config.firebaseCacheKey);
+	            	var authData = JSON.parse(authJSON);
+
+	            	if (!authData) {
+	            		var localJSON = localStorage.getItem(window.lfg.config.firebaseCacheKey);
+	            		authData = JSON.parse(localJSON);
+	            	}
+
+	            	if (authData) {
+	    	            var ref = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + authData.uid + '/games/' + game);
+		            	ref.remove(function (err) {
+			            if (err) {
+				            console.error(err);
+				            return;
+		        	    }
+
+				});
+			}
+	        }
             },
 
             resolveGbBrokenImage: function (imgElem) {
