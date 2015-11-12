@@ -1263,6 +1263,18 @@
             				functionRef: refFunc
             			});
             		}
+            		
+            		//Register child_removed callback - this will remove the game from the userGames array
+			userGamesRef.on('child_removed', function(oldChildSnapshot) {
+				// remove game from userGames array & update polymer element
+				var oldKey = oldChildSnapshot.key();
+				var deletedGame = _.findWhere(cusElem.userGames, { _key: oldKey });
+				
+				if(deletedGame){
+					cusElem.userGames = _.without(cusElem.userGames, deletedGame);
+					cusElem.notifyPath('userGames', cusElem.userGames);
+				}
+			});
             	}
             },
 
@@ -1310,16 +1322,15 @@
 
 	            	if (authData) {
 	    	            var ref = new Firebase(window.lfg.config.getFirebaseUrl() + 'users/' + authData.uid + '/games/' + game);
-			            ref.remove(function (err) {
-				            if (err) {
-					            console.error(err);
-					            return;
-			        	    }
+		            	ref.remove(function (err) {
+			            if (err) {
+				            console.error(err);
+				            return;
+		        	    }
 
-			        	    cusElem.getTaggedGames(cusElem.systemFilter);
-						});
-					}
-		        }
+				});
+			}
+	        }
             },
 
             resolveGbBrokenImage: function (imgElem) {
