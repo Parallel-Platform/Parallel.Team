@@ -16,7 +16,7 @@ router.get('/', function (req, res) {
 	res.send('Hello world');
 });
 
-router.get('/email/sendCommentEmail', function (req, res) {
+router.get('/email/comment', function (req, res) {
 	var requestId = req.query.requestid;
 	var commenter = req.query.commenter;
 	var creator = req.query.creator;
@@ -32,7 +32,7 @@ router.get('/email/sendCommentEmail', function (req, res) {
 	});
 });
 
-router.get('/email/sendInviteRequest', function (req, res) {
+router.get('/email/invite', function (req, res) {
 	var requestId = req.query.requestid;
 	var invitee = req.query.invitee;
 	var gameTitle = req.query.gametitle;
@@ -110,7 +110,7 @@ router.get('/steam/authenticate/verify', function (req, res) {
 	});
 });
 
-router.get('/giantbomb/search', function (req, res) {
+router.get('/game/search', function (req, res) {
 	console.log('DING: Giantbomb Search Route Hit');
 	giantbomb.getGames(req.query.search, req.query.limit)
 		.then(function (data) {

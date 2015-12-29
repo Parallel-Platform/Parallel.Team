@@ -16,11 +16,11 @@
                 games: 'api/giantbomb/games',
                 game: 'api/giantbomb/game',
                 platforms: 'api/giantbomb/platform',
-                search: 'api/giantbomb/search',
+                search: 'api/game/search',
                 steamlogin: 'api/steam/authenticate',
                 verifyEmail : 'api/verify',
-                inviteRequest: 'api/email/sendInviteRequest',
-                commentEmail: 'api/email/sendCommentEmail'
+                inviteRequest: 'api/email/invite',
+                commentEmail: 'api/email/comment'
             },
             firebaseUrl: '<Your Firebase Url>',
             firebaseEntities: {

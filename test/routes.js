@@ -19,7 +19,7 @@ describe('/api', function() {
 
 	describe('/', function() {
 		it('should respond simply', function(done) {
-			var expected = 'respond with a resource';
+			var expected = 'Hello world';
 
 			supertest(server)
 				.get('/api/')
