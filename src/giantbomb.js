@@ -14,7 +14,13 @@ module.exports = {
 		var url = gbRef.url + 'search/?api_key=' + gbRef.key + '&limit='
 			+ limit + '&format=json&query="' + query
 			+ '"&resources=game&field_list=id,name,image,original_release_date';
-
-		return requestPromise(url);
+			
+		var options = {
+			uri: url,
+			headers: {
+				'User-Agent': 'Parallel-Team'	
+			}
+		};
+		return requestPromise(options);
 	}
 };
